@@ -47,6 +47,11 @@ module.exports.loop = function () {
             tombstone.creep.memory = null;
         }    
     });
+
+    for (creep in Memory.creeps){
+        if (!Game.creeps[creep]) Memory.creeps[creep] = undefined;
+    }
+
 }
 
 function makeid(length) {
