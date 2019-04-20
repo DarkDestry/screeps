@@ -17,3 +17,4 @@ global.core.plan = function() {
         }
     }
 }
+
