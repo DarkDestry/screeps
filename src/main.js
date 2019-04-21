@@ -1,6 +1,7 @@
 /// <reference path="../ScreepsAutocomplete/_references.js" />
 
 require("core");
+require("require")
 var role = require("role");
 
 module.exports.loop = function () {
@@ -10,27 +11,35 @@ module.exports.loop = function () {
     SourceMemory()
 
     //Deploy creeps
-    for (var name in Game.rooms) {
-        var room = Game.rooms[name];
+    for (var roomName in Game.rooms) {
+        var room = Game.rooms[roomName];
         var sources = room.find(FIND_SOURCES)
         var spawns = room.find(FIND_MY_SPAWNS);
 
+
         for(var i in sources) {
             var source = sources[i];
+            //If Carry is dead
+            if (!source.memory.carry || !Game.creeps[source.memory.carry]) {
+                source.memory.carry = null;
+                var spawn = room.getSpawnableSpawn();
+                if (spawn)
+                    spawn.spawnCreep(
+                        role.hCarry.config[room.controller.level],
+                        makeid(5),
+                        {memory: {role: "hCarry", target: source}}
+                    )
+            }
             //If harvester is dead
-            if (!Game.creeps[source.memory.harvester]) {
+            if (!source.memory.harvester || !Game.creeps[source.memory.harvester]) {
                 source.memory.harvester = null;
-                for (var i in spawns) {
-                    var spawn = spawns[i];
-                    if (!spawn.spawning) {
-                        spawn.spawnCreep(
-                            role.harvester.config[room.controller.level],
-                            makeid(5),
-                            {memory: {role: "harvester", target: source}}
-                        )
-                        break;
-                    }
-                }
+                var spawn = room.getSpawnableSpawn();
+                if (spawn)
+                    spawn.spawnCreep(
+                        role.harvester.config[room.controller.level],
+                        makeid(5),
+                        {memory: {role: "harvester", target: source}}
+                    )
             }
         }
     }
@@ -40,13 +49,6 @@ module.exports.loop = function () {
         var creep = Game.creeps[name];
         role.update(creep);
     }
-
-    //Wipe creep memory
-    room.find(FIND_TOMBSTONES).forEach(tombstone => {
-        if(tombstone.creep.my) {
-            tombstone.creep.memory = null;
-        }    
-    });
 
     for (creep in Memory.creeps){
         if (!Game.creeps[creep]) Memory.creeps[creep] = undefined;
@@ -75,7 +77,8 @@ function SourceMemory() {
             var sources = room.find(FIND_SOURCES);//Find all sources in the current room
             for(var i in sources){
                 var source = sources[i];
-                source.memory = room.memory.sources[source.id] = {}; //Create a new empty memory object for this source
+                room.memory.sources[source.id] = {}; //Create a new empty memory object for this source
+                source.memory = room.memory.sources[source.id];
                 //Now you can do anything you want to do with this source
                 //for example you could add a worker counter:
                 source.memory.workers = 0;
@@ -85,6 +88,7 @@ function SourceMemory() {
             for(var i in sources){
                 var source = sources[i];
                 source.memory = room.memory.sources[source.id]; //Set the shortcut
+                if (source.memory == undefined) source.memory = {}
             }
         }
     }

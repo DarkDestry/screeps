@@ -4,8 +4,6 @@ module.exports.config = [[],
     [WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE]
 ]
 
-module.exports.target = 
-
 module.exports.update = function(creep) {
     
     var target = Game.getObjectById(creep.memory.target.id);

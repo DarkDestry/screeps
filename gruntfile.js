@@ -13,6 +13,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-screeps')
     grunt.loadNpmTasks('grunt-contrib-clean')
     grunt.loadNpmTasks('grunt-contrib-copy')
+    grunt.loadNpmTasks('grunt-rsync')
 
     grunt.initConfig({
         screeps: {
@@ -28,7 +29,8 @@ module.exports = function(grunt) {
         },
 
         clean: {
-            'dist': ['dist/*']
+            dist: ['dist/*'],
+            steam: [private_directory+'*']
         },
 
         copy: {
@@ -44,6 +46,19 @@ module.exports = function(grunt) {
                   return dest + src.replace(/\//g,'_');
                 }
               }],
+            },
+            private: {
+                files: [{
+                    expand: true,
+                    cwd: 'src/',
+                    src: '**',
+                    dest: private_directory,
+                    filter: 'isFile',
+                    rename: function (dest, src) {
+                      // Change the path name utilize underscores for folders
+                      return dest + src.replace(/\//g,'_');
+                    }
+                  }],
             }
         },
 
@@ -55,14 +70,14 @@ module.exports = function(grunt) {
             },
             private: {
                 options: {
-                    src: './dist/',
+                    src: '.\\dist\\',
                     dest: private_directory,
                 }
-            },
+            }
         },
     });
 
 
-    grunt.registerTask('default',  ['clean', 'copy:screeps', 'screeps']);
-    grunt.registerTask('private',  ['clean', 'copy:screeps', 'rsync:private']);
+    grunt.registerTask('default',  ['clean:dist', 'copy:screeps', 'screeps']);
+    grunt.registerTask('private',  ['clean:dist', 'copy:screeps', 'clean:steam', 'copy:private']);
 }
