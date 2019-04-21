@@ -4,7 +4,7 @@ module.exports.config = [[],
     [CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE],
 ]
 
-module.exports.update = function(creep) {
+module.exports.update = function update(creep) {
     
     const total = _.sum(creep.carry);
 
