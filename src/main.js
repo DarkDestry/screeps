@@ -67,8 +67,12 @@ module.exports.loop = function () {
 
     //Creep logic
     for (var name in Game.creeps) {
-        var creep = Game.creeps[name];
-        role.update(creep);
+        try{
+            var creep = Game.creeps[name];
+            role.update(creep);
+        } catch(err) {
+            throw err
+        }
     }
 
     for (creep in Memory.creeps){
