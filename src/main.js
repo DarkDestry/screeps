@@ -11,6 +11,7 @@ module.exports.loop = function () {
     SourceMemory()
 
     //Deploy creeps
+    deploy:
     for (var roomName in Game.rooms) {
         var room = Game.rooms[roomName];
         var sources = room.find(FIND_SOURCES)
@@ -18,7 +19,7 @@ module.exports.loop = function () {
         var effectiveLevel = room.getEffectiveLevel();
 
         //Deploy Energy Collectors
-        for(var i in sources) {
+        for(var i in sources) { //Deploy Carrys if a harvester exist
             var source = sources[i];
             //If Carry is dead
             if (Game.creeps[source.memory.harvester] && (!source.memory.carry || !Game.creeps[source.memory.carry])) {
@@ -30,7 +31,12 @@ module.exports.loop = function () {
                         makeid(5),
                         {memory: {role: "hCarry", target: source}}
                     )
+                continue deploy;
             }
+        }
+
+        for(var i in sources) { //Deploy Harvester
+            var source = sources[i];
             //If harvester is dead
             if (!source.memory.harvester || !Game.creeps[source.memory.harvester]) {
                 source.memory.harvester = null;
@@ -41,6 +47,7 @@ module.exports.loop = function () {
                         makeid(5),
                         {memory: {role: "harvester", target: source}}
                     )
+                continue deploy;
             }
         }
 
@@ -50,11 +57,12 @@ module.exports.loop = function () {
             if (!room.memory.uCarry || !Game.creeps[room.memory.uCarry]) {
                 room.memory.uCarry = undefined;
                 if (spawn)
-                spawn.spawnCreep(
-                    role.uCarry.config[effectiveLevel],
-                    makeid(5),
-                    {memory: {role: "uCarry", target: room.controller}}
-                )
+                    spawn.spawnCreep(
+                        role.uCarry.config[effectiveLevel],
+                        makeid(5),
+                        {memory: {role: "uCarry", target: room.controller}}
+                    )
+                continue deploy;
             }
 
             if (room.getUpgraderCount() < 2 && spawn)
@@ -63,6 +71,7 @@ module.exports.loop = function () {
                     makeid(5),
                     {memory: {role: "upgrade", target: room.controller}}
                 )
+            continue deploy;
         }
     }
 
