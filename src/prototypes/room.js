@@ -42,6 +42,21 @@ Room.prototype.getUpgraderCount = function getUpgraderCount() {
     return count;
 }
 
+Room.prototype.getBuilderCount = function getBuilderCount() {
+    if (!this.memory.builder) {
+        this.memory.builder = {};
+        return 0;
+    }
+
+    var count = 0;
+    for(var name in this.memory.builder) {
+        if (Game.creeps[name]) count++;
+        else this.memory.builder[name] = undefined;
+    }
+
+    return count;
+}
+
 Room.prototype.getLowestStorageUpgrader = function getLowestStorageUpgrader() {
     var max = 99999;
     var currUpgrader = undefined;

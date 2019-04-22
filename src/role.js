@@ -2,6 +2,7 @@ module.exports.harvester = require("role_harvester");
 module.exports.hCarry = require("role_hCarry");
 module.exports.upgrade = require("role_upgrade");
 module.exports.uCarry = require("role_uCarry");
+module.exports.build = require("role_build");
 
 module.exports.update = function update(creep){
     switch (creep.memory.role) {
@@ -17,6 +18,8 @@ module.exports.update = function update(creep){
         case "uCarry":
             this.uCarry.update(creep);
             break;
-
+        case "build":
+            this.build.update(creep);
+            break;
     }
 }

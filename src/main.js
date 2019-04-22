@@ -51,8 +51,8 @@ module.exports.loop = function () {
             }
         }
 
-        //Deploy upgrader
         if (room.sourcesSaturated()) {
+            //Deploy upgrader carry (No point deploying the upgrader first)
             var spawn = room.getSpawnableSpawn();
             if (!room.memory.uCarry || !Game.creeps[room.memory.uCarry]) {
                 room.memory.uCarry = undefined;
@@ -65,13 +65,26 @@ module.exports.loop = function () {
                 continue deploy;
             }
 
-            if (room.getUpgraderCount() < 2 && spawn)
-                spawn.spawnCreep(
-                    role.upgrade.config[effectiveLevel],
-                    makeid(5),
-                    {memory: {role: "upgrade", target: room.controller}}
-                )
-            continue deploy;
+            //Deploy upgrader
+            if (room.getUpgraderCount() < 2){
+                if (spawn)
+                    spawn.spawnCreep(
+                        role.upgrade.config[effectiveLevel],
+                        makeid(5),
+                        {memory: {role: "upgrade", target: room.controller}}
+                    )
+                continue deploy;
+            }
+
+            //Deploy builders
+            if (room.find(FIND_CONSTRUCTION_SITES).length/5 > room.getBuilderCount()) {
+                if (spawn)
+                    spawn.spawnCreep (
+                        role.build.config[effectiveLevel],
+                        makeid(5),
+                        {memory: {role: "build"}}
+                    )
+            }
         }
     }
 
