@@ -16,11 +16,11 @@ module.exports.loop = function () {
         var sources = room.find(FIND_SOURCES)
         var spawns = room.find(FIND_MY_SPAWNS);
 
-
+        //Deploy Energy Collectors
         for(var i in sources) {
             var source = sources[i];
             //If Carry is dead
-            if (!source.memory.carry || !Game.creeps[source.memory.carry]) {
+            if (Game.creeps[source.memory.harvester] && (!source.memory.carry || !Game.creeps[source.memory.carry])) {
                 source.memory.carry = null;
                 var spawn = room.getSpawnableSpawn();
                 if (spawn)
@@ -41,6 +41,26 @@ module.exports.loop = function () {
                         {memory: {role: "harvester", target: source}}
                     )
             }
+        }
+
+        //Deploy upgrader
+        if (room.sourcesSaturated()) {
+            var spawn = room.getSpawnableSpawn();
+            if (!room.memory.uCarry || !Game.creeps[room.memory.uCarry]) {
+                if (spawn)
+                spawn.spawnCreep(
+                    role.uCarry.config[room.controller.level],
+                    makeid(5),
+                    {memory: {role: "uCarry", target: room.controller}}
+                )
+            }
+            
+            if (room.getUpgraderCount() < 2 && spawn)
+                spawn.spawnCreep(
+                    role.upgrade.config[room.controller.level],
+                    makeid(5),
+                    {memory: {role: "upgrade", target: room.controller}}
+                )
         }
     }
 
