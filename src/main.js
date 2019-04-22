@@ -48,6 +48,7 @@ module.exports.loop = function () {
         if (room.sourcesSaturated()) {
             var spawn = room.getSpawnableSpawn();
             if (!room.memory.uCarry || !Game.creeps[room.memory.uCarry]) {
+                room.memory.uCarry = undefined;
                 if (spawn)
                 spawn.spawnCreep(
                     role.uCarry.config[effectiveLevel],

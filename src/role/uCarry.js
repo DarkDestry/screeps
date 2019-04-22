@@ -19,7 +19,7 @@ function state_dropoff(creep) {
 
     //Goto Target
     var range = 3;
-    if (!target.structureType) range = 1;    
+    if (target.name != "controller") range = 1;    
     creep.moveTo(target.pos, {range: 1, ignoreCreeps: false});
 
     //Transact with target
@@ -33,7 +33,11 @@ function state_pickup(creep) {
         target = creep.room.storage;
     }
     else {
-        target = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES);
+        target = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, {
+            filter: function(obj)
+            {
+                return obj.amount > creep.carryCapacity && obj.resourceType == RESOURCE_ENERGY
+            }});
     }
 
     
