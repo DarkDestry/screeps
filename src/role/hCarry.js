@@ -5,10 +5,7 @@ module.exports.config = [[],
 ]
 
 module.exports.update = function update(creep) {
-    
-    const total = _.sum(creep.carry);
-
-    if (total != creep.carryCapacity) state_pickup(creep);
+    if (creep.totalCarry() != creep.carryCapacity) state_pickup(creep);
     else state_dropoff(creep);
 }
 
