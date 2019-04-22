@@ -48,6 +48,9 @@ Room.prototype.getLowestStorageUpgrader = function getLowestStorageUpgrader() {
 
     for (var name in this.memory.upgrader) {
         var upgrader = Game.creeps[name];
+        if (!upgrader) {
+            this.memory.upgrader[name] = undefined;
+        }
         if (upgrader.totalCarry() < upgrader.carryCapacity/2) {
             max = upgrader.totalCarry();
             currUpgrader = upgrader;
@@ -67,4 +70,25 @@ Room.prototype.sourcesSaturated = function sourcesSaturated() {
     }
 
     return ret;
+}
+
+Room.prototype.getEffectiveLevel = function getEffectiveLevel() {
+    var extensions = this.find(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_EXTENSION}})
+    
+    var extensionCapacity = 50;
+    if (this.controller.level == 7) extensionCapacity = 100
+    else if (this.controller.level == 8) extensionCapacity = 200
+
+    var spawnPower = extensions.length * extensionCapacity
+    if (spawnPower < 250) return 1;
+    if (spawnPower < 500) return 2;
+    if (spawnPower < 1000) return 3;
+    if (spawnPower < 1500) return 4;
+    if (spawnPower < 2000) return 5;
+    
+    var spawns = this.getSpawns();
+    if (spawnPower < 5000 || spawns.length < 2) return 6;
+    if (spawnPower < 12000 || spawns.length < 3) return 7;
+    return 8;
+
 }
