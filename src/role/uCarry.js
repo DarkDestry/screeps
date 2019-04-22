@@ -5,6 +5,8 @@ module.exports.config = [[],
 ]
 
 module.exports.update = function update(creep) {
+    RoadLaying();
+
     if (!creep.room.memory.uCarry) creep.room.memory.uCarry = creep.name;
 
     if (creep.totalCarry() == 0) state_pickup(creep);
@@ -42,10 +44,15 @@ function state_pickup(creep) {
 
     
     //goto Target
-    creep.moveTo(target.pos, {range: 1, ignoreCreeps: false});
+    creep.moveTo(target.pos, {range: 1, ignoreCreeps: false, ignoreRoads: true});
 
     
     //Transact with target
     if (target.structureType) creep.withdraw(target, RESOURCE_ENERGY);
     else creep.pickup(target);
+}
+
+function RoadLaying() {
+    if (creep.room.getTerrain().get(creep.pos.x, creep.pos.y) == TERRAIN_MASK_SWAMP) 
+        creep.pos.createConstructionSite(STRUCTURE_ROAD);
 }
