@@ -43,7 +43,7 @@ function state_pickup(creep) {
     }
 
     if (!target){
-        var spawnInRange = creep.pos.find(FIND_MY_SPAWNS, 3)
+        var spawnInRange = creep.room.find(FIND_MY_SPAWNS, 3)
         if (spawnInRange.length > 0) creep.moveTo(spawnInRange[0], {range: 4, flee:true})
         return;
     }

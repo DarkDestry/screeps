@@ -36,6 +36,7 @@ function state_pickup(creep) {
             }});
     }
 
+    if (target == null) return;
     
     //goto Target
     creep.moveTo(target.pos, {range: 1, ignoreCreeps: false, ignoreRoads: true});
