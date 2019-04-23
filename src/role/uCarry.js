@@ -20,7 +20,7 @@ function state_dropoff(creep) {
     if (lowestUpgrader) target = lowestUpgrader;
 
     //Goto Target
-    var range = 3;
+    var range = 2;
     if (target.name != "controller") range = 1;    
     creep.moveTo(target.pos, {range: 1, ignoreCreeps: false});
 

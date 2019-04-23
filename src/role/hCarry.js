@@ -14,8 +14,14 @@ function state_dropoff(creep) {
     var target = undefined;
     if (creep.room.storage) target = creep.room.storage;
     else target = creep.room.getLowestStorageSpawn();
-
-    creep.moveTo(target.pos, {range: 1, ignoreCreeps: false});
+    
+    if (target.structureType == STRUCTURE_SPAWN && target.energy == target.energyCapacity){
+        var path = PathFinder.search(creep.pos, {pos:target.pos, range:3} , {flee:true} ).path
+        creep.moveByPath(path)
+    }
+    else {
+        creep.moveTo(target.pos, {range: 1, ignoreCreeps: false});
+    }
 
     if (creep.pos.getRangeTo(target.pos) == 1) {
         creep.transfer(target, RESOURCE_ENERGY)
