@@ -13,9 +13,19 @@ module.exports.update = function update(creep) {
 
 function state_build(creep) {
     //Acquire nearest construction site
-    var target = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
+    var target;
+    if (creep.memory.target) target = Game.getObjectById(creep.memory.target.id)
+    else {
+        target = creep.pos.findClosestByRange(creep.room.getConstructionTargets());
+        creep.memory.target = target;
+    }
 
-    if (target == null) return;
+    //If there is literally no more construction targets, Idle
+    if (target == null) {
+        var path = PathFinder.search(creep.pos, creep.room.getSpawns().map(s => {return{pos:s.pos, range:3}}) , {flee:true} ).path
+        creep.moveByPath(path)
+        return;
+    }
     
     //goto Target
     creep.moveTo(target.pos, {range: 3, ignoreCreeps: false, ignoreRoads: true});
@@ -25,6 +35,7 @@ function state_build(creep) {
 }
 
 function state_pickup(creep) {
+    creep.memory.target = null;
     //acquire pickup target
     var target;
     if (creep.room.storage) {

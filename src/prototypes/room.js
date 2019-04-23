@@ -146,3 +146,12 @@ Room.prototype.getECarryPath = function getECarryPath() {
     }
     return path;
 }
+
+Room.prototype.getConstructionTargets = function getConstructionTargets() {
+    var targets = [];
+    var constructionSites = this.find(FIND_CONSTRUCTION_SITES);
+    for (var i in constructionSites) targets.push(constructionSites[i]);
+    var damagedStructures = this.find(FIND_MY_STRUCTURES, {filter: function(obj){return obj.hits < obj.hitsMax/2}})
+    for (var i in damagedStructures) targets.push(damagedStructures[i]);
+    return targets;
+}
