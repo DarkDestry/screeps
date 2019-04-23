@@ -17,6 +17,7 @@ module.exports.loop = function () {
         var sources = room.find(FIND_SOURCES)
         var spawns = room.find(FIND_MY_SPAWNS);
         var effectiveLevel = room.getEffectiveLevel();
+        var result = undefined;
 
         //Deploy Energy Collectors
         for(var i in sources) { //Deploy Carrys if a harvester exist
@@ -26,11 +27,13 @@ module.exports.loop = function () {
                 source.memory.carry = null;
                 var spawn = room.getSpawnableSpawn();
                 if (spawn)
-                    spawn.spawnCreep(
-                        role.hCarry.config[effectiveLevel],
-                        makeid(5),
-                        {memory: {role: "hCarry", target: source}}
-                    )
+                    do {
+                        result = spawn.spawnCreep (
+                            role.hCarry.config[effectiveLevel--],
+                            makeid(5),
+                            {memory: {role: "hCarry", target: source}}
+                        )
+                    } while (result != OK && effectiveLevel > 0)
                 continue deploy;
             }
         }
@@ -42,11 +45,13 @@ module.exports.loop = function () {
                 source.memory.harvester = null;
                 var spawn = room.getSpawnableSpawn();
                 if (spawn)
-                    spawn.spawnCreep(
-                        role.harvester.config[effectiveLevel],
-                        makeid(5),
-                        {memory: {role: "harvester", target: source}}
-                    )
+                    do {
+                        result = spawn.spawnCreep (
+                            role.harvester.config[effectiveLevel--],
+                            makeid(5),
+                            {memory: {role: "harvester", target: source}}
+                        )
+                    } while (result != OK && effectiveLevel > 0)
                 continue deploy;
             }
         }
@@ -57,33 +62,54 @@ module.exports.loop = function () {
             if (!room.memory.uCarry || !Game.creeps[room.memory.uCarry]) {
                 room.memory.uCarry = undefined;
                 if (spawn)
-                    spawn.spawnCreep(
-                        role.uCarry.config[effectiveLevel],
-                        makeid(5),
-                        {memory: {role: "uCarry", target: room.controller}}
-                    )
+                    do {
+                        result = spawn.spawnCreep (
+                            role.uCarry.config[effectiveLevel--],
+                            makeid(5),
+                            {memory: {role: "uCarry", target: room.controller}}
+                        )
+                    } while (result != OK && effectiveLevel > 0)
                 continue deploy;
             }
 
             //Deploy upgrader
             if (room.getUpgraderCount() < 2){
                 if (spawn)
-                    spawn.spawnCreep(
-                        role.upgrade.config[effectiveLevel],
-                        makeid(5),
-                        {memory: {role: "upgrade", target: room.controller}}
-                    )
+                    do {
+                        result = spawn.spawnCreep (
+                            role.upgrade.config[effectiveLevel--],
+                            makeid(5),
+                            {memory: {role: "upgrade", target: room.controller}}
+                        )
+                    } while (result != OK && effectiveLevel > 0)
                 continue deploy;
             }
 
             //Deploy builders
-            if (room.find(FIND_CONSTRUCTION_SITES).length/5 > room.getBuilderCount()) {
+            if (room.find(FIND_CONSTRUCTION_SITES).length/2 > room.getBuilderCount()) {
                 if (spawn)
-                    spawn.spawnCreep (
-                        role.build.config[effectiveLevel],
-                        makeid(5),
-                        {memory: {role: "build"}}
-                    )
+                    do {
+                        result = spawn.spawnCreep (
+                            role.build.config[effectiveLevel--],
+                            makeid(5),
+                            {memory: {role: "build"}}
+                        )
+                    } while (result != OK && effectiveLevel > 0)
+                continue deploy
+            }
+
+            if (effectiveLevel > 1 && (!room.memory.eCarry || !Game.creeps[room.memory.eCarry])) {
+                room.memory.eCarry = null;
+                if (spawn){
+                    do {
+                        result = spawn.spawnCreep (
+                            role.eCarry.config[effectiveLevel--],
+                            makeid(5),
+                            {memory: {role:"eCarry"}}
+                        )
+                    } while (result != OK && effectiveLevel > 0)
+                }
+                continue deploy;
             }
         }
     }
@@ -135,6 +161,7 @@ function SourceMemory() {
             var sources = room.find(FIND_SOURCES);//Find all sources in the current room
             for(var i in sources){
                 var source = sources[i];
+                if (!room.memory.sources[source.id]) room.memory.sources[source.id] = {}
                 source.memory = room.memory.sources[source.id]; //Set the shortcut
                 if (source.memory == undefined) source.memory = {}
             }

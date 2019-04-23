@@ -3,8 +3,11 @@ module.exports.hCarry = require("role_hCarry");
 module.exports.upgrade = require("role_upgrade");
 module.exports.uCarry = require("role_uCarry");
 module.exports.build = require("role_build");
+module.exports.eCarry = require("role_eCarry");
 
 module.exports.update = function update(creep){
+    creep.room.visual.text(creep.memory.role, creep.pos, {font:"0.5", stroke: "black", align: "center"})
+
     switch (creep.memory.role) {
         case "harvester": 
             this.harvester.update(creep);
@@ -20,6 +23,9 @@ module.exports.update = function update(creep){
             break;
         case "build":
             this.build.update(creep);
+            break;
+        case "eCarry":
+            this.eCarry.update(creep);
             break;
     }
 }

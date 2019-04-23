@@ -14,6 +14,8 @@ module.exports.update = function update(creep) {
 function state_build(creep) {
     //Acquire nearest construction site
     var target = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
+
+    if (target == null) return;
     
     //goto Target
     creep.moveTo(target.pos, {range: 3, ignoreCreeps: false, ignoreRoads: true});

@@ -1,13 +1,12 @@
 global.core = [];
 
-global.core.plan = function() {
+global.core.plan = function plan() {
     //Get RCL
     for (var name in Game.rooms) {
         var room = Game.rooms[name];
         var spawns = room.find(FIND_MY_SPAWNS);
         var spawn = spawns[0];
         DrawPlan(spawn, room)
-        return;
         switch (room.controller.level) {
             case 2:
                 room.createConstructionSite(spawn.pos.x+1,spawn.pos.y-1,STRUCTURE_EXTENSION);
@@ -42,6 +41,7 @@ global.core.plan = function() {
 
 function DrawPlan(spawn, room) {
     switch (room.controller.level) {
+        case 1:
         case 2:
             if (room.getEffectiveLevel() < 2){
                 room.visual.circle(spawn.pos.x+1,spawn.pos.y-1,{fill: 'transparent', radius: 0.55, stroke: 'red'});

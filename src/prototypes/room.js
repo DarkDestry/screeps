@@ -107,3 +107,42 @@ Room.prototype.getEffectiveLevel = function getEffectiveLevel() {
     return 8;
 
 }
+
+Room.prototype.getECarryPath = function getECarryPath() {
+    var spawns = this.find(FIND_MY_SPAWNS);
+    var spawn = spawns[0];
+    var path = [];
+    
+    switch (this.controller.level) {
+        case 2: 
+            path = [
+                {x: spawn.pos.x-1, y: spawn.pos.y-2 },
+                {x: spawn.pos.x, y: spawn.pos.y-1 },
+                {x: spawn.pos.x+1, y: spawn.pos.y-2 }
+            ]
+            break;
+        case 3:
+            path = [
+                {x: spawn.pos.x-2, y: spawn.pos.y-3 },
+                {x: spawn.pos.x-1, y: spawn.pos.y-2 },
+                {x: spawn.pos.x, y: spawn.pos.y-1 },
+                {x: spawn.pos.x+1, y: spawn.pos.y-2 },
+                {x: spawn.pos.x+2, y: spawn.pos.y-3 }
+            ]
+            break;
+        case 4:
+            path = [
+                {x: spawn.pos.x-4, y: spawn.pos.y-1 },
+                {x: spawn.pos.x-3, y: spawn.pos.y-2 },
+                {x: spawn.pos.x-2, y: spawn.pos.y-3 },
+                {x: spawn.pos.x-1, y: spawn.pos.y-2 },
+                {x: spawn.pos.x, y: spawn.pos.y-1 },
+                {x: spawn.pos.x+1, y: spawn.pos.y-2 },
+                {x: spawn.pos.x+2, y: spawn.pos.y-3 },
+                {x: spawn.pos.x+3, y: spawn.pos.y-2 },
+                {x: spawn.pos.x+4, y: spawn.pos.y-1 },
+            ]
+            break;
+    }
+    return path;
+}
