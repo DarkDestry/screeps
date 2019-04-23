@@ -86,7 +86,7 @@ module.exports.loop = function () {
             }
 
             //Deploy builders
-            if (room.find(FIND_CONSTRUCTION_SITES).length/2 > room.getBuilderCount()) {
+            if (room.getConstructionTargets().length/2 > room.getBuilderCount()) {
                 if (spawn)
                     do {
                         result = spawn.spawnCreep (
@@ -120,7 +120,7 @@ module.exports.loop = function () {
             var creep = Game.creeps[name];
             role.update(creep);
         } catch(err) {
-            throw err
+            console.log(err.stack)
         }
     }
 

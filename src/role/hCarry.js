@@ -16,7 +16,7 @@ function state_dropoff(creep) {
     else target = creep.room.getLowestStorageSpawn();
     
     if (target.structureType == STRUCTURE_SPAWN && target.energy == target.energyCapacity){
-        var path = PathFinder.search(creep.pos, {pos:target.pos, range:3} , {flee:true} ).path
+        var path = PathFinder.search(creep.pos, {pos:target.pos, range:5} , {flee:true} ).path
         creep.moveByPath(path)
     }
     else {

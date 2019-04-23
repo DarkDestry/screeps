@@ -6,40 +6,61 @@ global.core.plan = function plan() {
         var room = Game.rooms[name];
         var spawns = room.find(FIND_MY_SPAWNS);
         var spawn = spawns[0];
-        DrawPlan(spawn, room)
-        switch (room.controller.level) {
-            case 2:
-                room.createConstructionSite(spawn.pos.x+1,spawn.pos.y-1,STRUCTURE_EXTENSION);
-                room.createConstructionSite(spawn.pos.x-1,spawn.pos.y-1,STRUCTURE_EXTENSION);
-                room.createConstructionSite(spawn.pos.x,spawn.pos.y-2,STRUCTURE_EXTENSION);
-                room.createConstructionSite(spawn.pos.x+1,spawn.pos.y-3,STRUCTURE_EXTENSION);
-                room.createConstructionSite(spawn.pos.x-1,spawn.pos.y-3,STRUCTURE_EXTENSION);
-                break;
-            case 3:
-                room.createConstructionSite(spawn.pos.x+2,spawn.pos.y-1,STRUCTURE_EXTENSION);
-                room.createConstructionSite(spawn.pos.x-2,spawn.pos.y-1,STRUCTURE_EXTENSION);
-                room.createConstructionSite(spawn.pos.x+2,spawn.pos.y-2,STRUCTURE_EXTENSION);
-                room.createConstructionSite(spawn.pos.x-2,spawn.pos.y-2,STRUCTURE_EXTENSION);
-                room.createConstructionSite(spawn.pos.x-3,spawn.pos.y-3,STRUCTURE_EXTENSION);
-                break;
-            case 4:
-                room.createConstructionSite(spawn.pos.x+3,spawn.pos.y-3,STRUCTURE_EXTENSION);
-                room.createConstructionSite(spawn.pos.x+2,spawn.pos.y-4,STRUCTURE_EXTENSION);
-                room.createConstructionSite(spawn.pos.x-2,spawn.pos.y-4,STRUCTURE_EXTENSION);
-                room.createConstructionSite(spawn.pos.x-4,spawn.pos.y-3,STRUCTURE_EXTENSION);
-                room.createConstructionSite(spawn.pos.x-4,spawn.pos.y-2,STRUCTURE_EXTENSION);
-                room.createConstructionSite(spawn.pos.x+4,spawn.pos.y-3,STRUCTURE_EXTENSION);
-                room.createConstructionSite(spawn.pos.x+4,spawn.pos.y-2,STRUCTURE_EXTENSION);
-                room.createConstructionSite(spawn.pos.x-3,spawn.pos.y-1,STRUCTURE_EXTENSION);
-                room.createConstructionSite(spawn.pos.x+3,spawn.pos.y-1,STRUCTURE_EXTENSION);
-                room.createConstructionSite(spawn.pos.x+4,spawn.pos.y,STRUCTURE_EXTENSION);
-        }
+        DrawExtensionPlan(spawn, room);
+        ActExtensionPlan(spawn, room);
+        DrawRoadPlan(spawn, room);
+        ActRoadPlan(spawn, room);
     }
 }
 
+function DrawRoadPlan(spawn, room) {
+    var eCarryRoad = room.getECarryPath();
+    
+    for (var i = 0; i < eCarryRoad.length-1; i++) {
+        room.visual.line(eCarryRoad[i].x, eCarryRoad[i].y, eCarryRoad[i+1].x, eCarryRoad[i+1].y, {color: 'white'})
+    }
+}
 
+function ActRoadPlan(spawn, room) {
+    var eCarryRoad = room.getECarryPath();
+    
+    for (var i in eCarryRoad) {
+        var pos = eCarryRoad[i];
+        room.createConstructionSite(pos.x, pos.y, STRUCTURE_ROAD)
+    }
+}
 
-function DrawPlan(spawn, room) {
+function ActExtensionPlan(spawn, room) {
+    switch (room.controller.level) {
+        case 2:
+            room.createConstructionSite(spawn.pos.x+1,spawn.pos.y-1,STRUCTURE_EXTENSION);
+            room.createConstructionSite(spawn.pos.x-1,spawn.pos.y-1,STRUCTURE_EXTENSION);
+            room.createConstructionSite(spawn.pos.x,spawn.pos.y-2,STRUCTURE_EXTENSION);
+            room.createConstructionSite(spawn.pos.x+1,spawn.pos.y-3,STRUCTURE_EXTENSION);
+            room.createConstructionSite(spawn.pos.x-1,spawn.pos.y-3,STRUCTURE_EXTENSION);
+            break;
+        case 3:
+            room.createConstructionSite(spawn.pos.x+2,spawn.pos.y-1,STRUCTURE_EXTENSION);
+            room.createConstructionSite(spawn.pos.x-2,spawn.pos.y-1,STRUCTURE_EXTENSION);
+            room.createConstructionSite(spawn.pos.x+2,spawn.pos.y-2,STRUCTURE_EXTENSION);
+            room.createConstructionSite(spawn.pos.x-2,spawn.pos.y-2,STRUCTURE_EXTENSION);
+            room.createConstructionSite(spawn.pos.x-3,spawn.pos.y-3,STRUCTURE_EXTENSION);
+            break;
+        case 4:
+            room.createConstructionSite(spawn.pos.x+3,spawn.pos.y-3,STRUCTURE_EXTENSION);
+            room.createConstructionSite(spawn.pos.x+2,spawn.pos.y-4,STRUCTURE_EXTENSION);
+            room.createConstructionSite(spawn.pos.x-2,spawn.pos.y-4,STRUCTURE_EXTENSION);
+            room.createConstructionSite(spawn.pos.x-4,spawn.pos.y-3,STRUCTURE_EXTENSION);
+            room.createConstructionSite(spawn.pos.x-4,spawn.pos.y-2,STRUCTURE_EXTENSION);
+            room.createConstructionSite(spawn.pos.x+4,spawn.pos.y-3,STRUCTURE_EXTENSION);
+            room.createConstructionSite(spawn.pos.x+4,spawn.pos.y-2,STRUCTURE_EXTENSION);
+            room.createConstructionSite(spawn.pos.x-3,spawn.pos.y-1,STRUCTURE_EXTENSION);
+            room.createConstructionSite(spawn.pos.x+3,spawn.pos.y-1,STRUCTURE_EXTENSION);
+            room.createConstructionSite(spawn.pos.x+4,spawn.pos.y,STRUCTURE_EXTENSION);
+    }
+}
+
+function DrawExtensionPlan(spawn, room) {
     switch (room.controller.level) {
         case 1:
         case 2:
