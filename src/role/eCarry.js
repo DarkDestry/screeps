@@ -1,7 +1,7 @@
 module.exports.config = [[],
-    [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE],
-    [CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE],
-    [CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE],
+    [CARRY, CARRY,                  CARRY, CARRY,                   MOVE, MOVE],
+    [CARRY, CARRY, CARRY,           CARRY, CARRY, CARRY,            MOVE, MOVE, MOVE],
+    [CARRY, CARRY, CARRY, CARRY,    CARRY, CARRY, CARRY, CARRY,     MOVE, MOVE, MOVE, MOVE],
 ]
 
 module.exports.update = function update(creep) {
