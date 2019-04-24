@@ -15,14 +15,15 @@ function state_build(creep) {
     //Acquire nearest construction site
     var target;
     if (creep.memory.target) target = Game.getObjectById(creep.memory.target.id)
-    else {
+    if (target != null && target.progress == undefined && target.hits == target.hitsMax) target = null
+    if (target == null) {
         target = creep.pos.findClosestByRange(creep.room.getConstructionTargets());
         creep.memory.target = target;
     }
 
     //If there is literally no more construction targets, Idle
     if (target == null) {
-        var path = PathFinder.search(creep.pos, creep.room.getSpawns().map(s => {return{pos:s.pos, range:3}}) , {flee:true} ).path
+        var path = PathFinder.search(creep.pos, creep.room.find(FIND_STRUCTURES).map(s => {return{pos:s.pos, range:3}}) , {flee:true} ).path
         creep.moveByPath(path)
         return;
     }
@@ -31,7 +32,8 @@ function state_build(creep) {
     creep.moveTo(target.pos, {range: 3, ignoreCreeps: false, ignoreRoads: true});
 
     //Build
-    creep.build(target)
+    if (target.progress != undefined) creep.build(target)
+    else creep.repair(target)
 }
 
 function state_pickup(creep) {

@@ -92,6 +92,19 @@ function DrawExtensionPlan(spawn, room) {
                 room.visual.circle(spawn.pos.x+3,spawn.pos.y-1,{fill: 'transparent', radius: 0.55, stroke: 'yellow'});
                 room.visual.circle(spawn.pos.x+4,spawn.pos.y,{fill: 'transparent', radius: 0.55, stroke: 'yellow'});
             }
+        case 5:
+            if (room.getEffectiveLevel() < 5){
+                room.visual.circle(spawn.pos.x+3,spawn.pos.y,{fill: 'transparent', radius: 0.55, stroke: 'blue'});
+                room.visual.circle(spawn.pos.x-3,spawn.pos.y,{fill: 'transparent', radius: 0.55, stroke: 'blue'});
+                room.visual.circle(spawn.pos.x-4,spawn.pos.y,{fill: 'transparent', radius: 0.55, stroke: 'blue'});
+                room.visual.circle(spawn.pos.x-5,spawn.pos.y-1,{fill: 'transparent', radius: 0.55, stroke: 'blue'});
+                room.visual.circle(spawn.pos.x+5,spawn.pos.y-1,{fill: 'transparent', radius: 0.55, stroke: 'blue'});
+                room.visual.circle(spawn.pos.x-5,spawn.pos.y-2,{fill: 'transparent', radius: 0.55, stroke: 'blue'});
+                room.visual.circle(spawn.pos.x+5,spawn.pos.y-2,{fill: 'transparent', radius: 0.55, stroke: 'blue'});
+                room.visual.circle(spawn.pos.x-6,spawn.pos.y,{fill: 'transparent', radius: 0.55, stroke: 'blue'});
+                room.visual.circle(spawn.pos.x+6,spawn.pos.y,{fill: 'transparent', radius: 0.55, stroke: 'blue'});
+                room.visual.circle(spawn.pos.x+5,spawn.pos.y+1,{fill: 'transparent', radius: 0.55, stroke: 'blue'});
+            }
     }
 
 }

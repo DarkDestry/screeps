@@ -153,5 +153,7 @@ Room.prototype.getConstructionTargets = function getConstructionTargets() {
     for (var i in constructionSites) targets.push(constructionSites[i]);
     var damagedStructures = this.find(FIND_MY_STRUCTURES, {filter: function(obj){return obj.hits < obj.hitsMax/2}})
     for (var i in damagedStructures) targets.push(damagedStructures[i]);
+    var damagedRoads = this.find(FIND_STRUCTURES, {filter: function(obj){return obj.structureType == STRUCTURE_ROAD && obj.hits < obj.hitsMax/2}})
+    for (var i in damagedRoads) targets.push(damagedRoads[i]);
     return targets;
 }
