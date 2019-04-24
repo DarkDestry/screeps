@@ -65,6 +65,7 @@ Room.prototype.getLowestStorageUpgrader = function getLowestStorageUpgrader() {
         var upgrader = Game.creeps[name];
         if (!upgrader) {
             this.memory.upgrader[name] = undefined;
+            continue;
         }
         if (upgrader.totalCarry() < upgrader.carryCapacity/2) {
             max = upgrader.totalCarry();

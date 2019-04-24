@@ -3,6 +3,7 @@
 require("core");
 require("require")
 var role = require("role");
+var tower = require("tower");
 
 module.exports.loop = function () {
     global.core.plan()
@@ -133,6 +134,16 @@ module.exports.loop = function () {
     }
 
     var errCache;
+    //Tower Logic
+    var towers = room.find(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}})
+    for (var i in towers) {
+        try {
+            tower.update(towers[i])
+        } catch (err) {
+            errCache = err;
+        }
+    }
+
     //Creep logic
     for (var name in Game.creeps) {
         try{
@@ -143,7 +154,7 @@ module.exports.loop = function () {
         }
     }
     if (errCache) throw errCache
-
+    
 }
 
 function makeid(length) {
