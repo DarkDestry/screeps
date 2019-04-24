@@ -10,7 +10,29 @@ global.core.plan = function plan() {
         ActExtensionPlan(spawn, room);
         DrawRoadPlan(spawn, room);
         ActRoadPlan(spawn, room);
+        DrawBaseFrame(spawn, room);
     }
+}
+
+function DrawBaseFrame(spawn,room) {
+    var tl = room.getPositionAt(spawn.pos.x-6,spawn.pos.y-4)
+    var tr = room.getPositionAt(spawn.pos.x+6,spawn.pos.y-4)
+    var bl = room.getPositionAt(spawn.pos.x-6,spawn.pos.y+8)
+    var br = room.getPositionAt(spawn.pos.x+6,spawn.pos.y+8)
+
+    room.visual.line(tl.x-1, tl.y, bl.x-1, bl.y, {color:"black", stroke:"yellow"})
+    room.visual.line(tl.x, tl.y-1, tr.x, tr.y-1, {color:"black", stroke:"yellow"})
+    room.visual.line(tr.x+1, tr.y, br.x+1, br.y, {color:"black", stroke:"yellow"})
+    room.visual.line(bl.x, bl.y+1, br.x, br.y+1, {color:"black", stroke:"yellow"})
+
+    room.visual.line(tl.x,tl.y,tl.x-1,tl.y,{color:"black", stroke:"yellow"})
+    room.visual.line(tl.x,tl.y,tl.x,tl.y-1,{color:"black", stroke:"yellow"})
+    room.visual.line(tr.x,tr.y,tr.x+1,tr.y,{color:"black", stroke:"yellow"})
+    room.visual.line(tr.x,tr.y,tr.x,tr.y-1,{color:"black", stroke:"yellow"})
+    room.visual.line(bl.x,bl.y,bl.x-1,bl.y,{color:"black", stroke:"yellow"})
+    room.visual.line(bl.x,bl.y,bl.x,bl.y+1,{color:"black", stroke:"yellow"})
+    room.visual.line(br.x,br.y,br.x+1,br.y,{color:"black", stroke:"yellow"})
+    room.visual.line(br.x,br.y,br.x,br.y+1,{color:"black", stroke:"yellow"})
 }
 
 function DrawRoadPlan(spawn, room) {
