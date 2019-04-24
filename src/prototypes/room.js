@@ -157,3 +157,26 @@ Room.prototype.getConstructionTargets = function getConstructionTargets() {
     for (var i in damagedRoads) targets.push(damagedRoads[i]);
     return targets;
 }
+
+Room.prototype.getSCarryPath = function getSCarryPath() {
+    var spawns = this.find(FIND_MY_SPAWNS);
+    var spawn = spawns[0];
+    var s = spawn.pos;
+    var path = [
+        {x: s.x, y: s.y-1},
+        {x: s.x+1, y: s.y},
+        {x: s.x+1, y: s.y+1},
+        {x: s.x+2, y: s.y+1},
+        {x: s.x+3, y: s.y+2},
+        {x: s.x+2, y: s.y+3},
+        {x: s.x+1, y: s.y+3},
+        {x: s.x, y: s.y+3},
+        {x: s.x-1, y: s.y+3},
+        {x: s.x-2, y: s.y+3},
+        {x: s.x-3, y: s.y+2},
+        {x: s.x-2, y: s.y+1},
+        {x: s.x-1, y: s.y+1},
+        {x: s.x-1, y: s.y},
+    ]
+    return path;
+}

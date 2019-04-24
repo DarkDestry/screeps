@@ -4,6 +4,7 @@ module.exports.upgrade = require("role_upgrade");
 module.exports.uCarry = require("role_uCarry");
 module.exports.build = require("role_build");
 module.exports.eCarry = require("role_eCarry");
+module.exports.sCarry = require("role_sCarry");
 
 module.exports.update = function update(creep){
     creep.room.visual.text(creep.memory.role, creep.pos, {font:"0.5", stroke: "black", align: "center"})
@@ -26,6 +27,9 @@ module.exports.update = function update(creep){
             break;
         case "eCarry":
             this.eCarry.update(creep);
+            break;
+        case "sCarry":
+            this.sCarry.update(creep);
             break;
     }
 }

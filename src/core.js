@@ -19,6 +19,12 @@ function DrawRoadPlan(spawn, room) {
     for (var i = 0; i < eCarryRoad.length-1; i++) {
         room.visual.line(eCarryRoad[i].x, eCarryRoad[i].y, eCarryRoad[i+1].x, eCarryRoad[i+1].y, {color: 'white'})
     }
+    
+    var sCarryRoad = room.getSCarryPath();
+    
+    for (var i = 0; i < sCarryRoad.length-1; i++) {
+        room.visual.line(sCarryRoad[i].x, sCarryRoad[i].y, sCarryRoad[i+1].x, sCarryRoad[i+1].y, {color: 'white'})
+    }
 }
 
 function ActRoadPlan(spawn, room) {
@@ -28,6 +34,15 @@ function ActRoadPlan(spawn, room) {
         var pos = eCarryRoad[i];
         room.createConstructionSite(pos.x, pos.y, STRUCTURE_ROAD)
     }
+
+    if (room.controller.level == 4){
+        var sCarryRoad = room.getSCarryPath();
+        
+        for (var i in sCarryRoad) {
+            var pos = sCarryRoad[i];
+            room.createConstructionSite(pos.x, pos.y, STRUCTURE_ROAD)
+        }
+    }   
 }
 
 function ActExtensionPlan(spawn, room) {
@@ -45,6 +60,7 @@ function ActExtensionPlan(spawn, room) {
             room.createConstructionSite(spawn.pos.x+2,spawn.pos.y-2,STRUCTURE_EXTENSION);
             room.createConstructionSite(spawn.pos.x-2,spawn.pos.y-2,STRUCTURE_EXTENSION);
             room.createConstructionSite(spawn.pos.x-3,spawn.pos.y-3,STRUCTURE_EXTENSION);
+            room.createConstructionSite(spawn.pos.x, spawn.pos.y+1, STRUCTURE_TOWER);
             break;
         case 4:
             room.createConstructionSite(spawn.pos.x+3,spawn.pos.y-3,STRUCTURE_EXTENSION);
@@ -57,6 +73,7 @@ function ActExtensionPlan(spawn, room) {
             room.createConstructionSite(spawn.pos.x-3,spawn.pos.y-1,STRUCTURE_EXTENSION);
             room.createConstructionSite(spawn.pos.x+3,spawn.pos.y-1,STRUCTURE_EXTENSION);
             room.createConstructionSite(spawn.pos.x+4,spawn.pos.y,STRUCTURE_EXTENSION);
+            room.createConstructionSite(spawn.pos.x, spawn.pos.y+2, STRUCTURE_STORAGE);
     }
 }
 

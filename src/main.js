@@ -111,22 +111,38 @@ module.exports.loop = function () {
                 }
                 continue deploy;
             }
-        }
-    }
 
-    //Creep logic
-    for (var name in Game.creeps) {
-        try{
-            var creep = Game.creeps[name];
-            role.update(creep);
-        } catch(err) {
-            console.log(err.stack)
+            if (effectiveLevel > 3 && (!room.memory.sCarry || !Game.creeps[room.memory.sCarry])) {
+                room.memory.sCarry = null;
+                if (spawn){
+                    do {
+                        result = spawn.spawnCreep (
+                            role.sCarry.config[effectiveLevel--],
+                            makeid(5),
+                            {memory: {role:"sCarry"}}
+                        )
+                    } while (result != OK && effectiveLevel > 0)
+                }
+                continue deploy;
+            }
         }
     }
 
     for (creep in Memory.creeps){
         if (!Game.creeps[creep]) Memory.creeps[creep] = undefined;
     }
+
+    var errCache;
+    //Creep logic
+    for (var name in Game.creeps) {
+        try{
+            var creep = Game.creeps[name];
+            role.update(creep);
+        } catch(err) {
+            errCache = err;
+        }
+    }
+    if (errCache) throw errCache
 
 }
 
