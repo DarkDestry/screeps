@@ -15,16 +15,24 @@ function state_dropoff(creep) {
     if (creep.room.storage) target = creep.room.storage;
     else target = creep.room.getLowestStorageSpawn();
     
-    if (target.structureType == STRUCTURE_SPAWN && target.energy == target.energyCapacity){
-        var path = PathFinder.search(creep.pos, {pos:target.pos, range:5} , {flee:true} ).path
+    if ((target.structureType == STRUCTURE_SPAWN && target.energy == target.energyCapacity) ||
+        (target.structureType == STRUCTURE_STORAGE && (target.store[RESOURCE_ENERGY]>600000 || _.sum(target.store) > 950000))){
+        var path = PathFinder.search(creep.pos, creep.room.find(FIND_STRUCTURES).map(s => {return{pos:s.pos, range:5}}) , {flee:true} ).path
         creep.moveByPath(path)
     }
     else {
         creep.moveTo(target.pos, {range: 1, ignoreCreeps: false});
     }
 
+
     if (creep.pos.getRangeTo(target.pos) == 1) {
         creep.transfer(target, RESOURCE_ENERGY)
+    }
+    else {
+        var targets = creep.pos.findInRange(FIND_MY_CREEPS, 1, {filter: c => {return (c.memory.role == "eCarry" || c.memory.role == "sCarry") && c.totalCarry() < c.carryCapacity}})
+        if (targets && targets[0]) {
+            creep.transfer(targets[0], RESOURCE_ENERGY)
+        }
     }
 }
 
