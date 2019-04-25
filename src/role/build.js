@@ -14,7 +14,7 @@ module.exports.update = function update(creep) {
 
 function state_build(creep) {
     //Acquire nearest construction site
-    var target;
+    var target = null;
     if (creep.memory.target) target = Game.getObjectById(creep.memory.target.id)
     if (target != null && target.progress == undefined && target.hits == target.hitsMax) target = null
     if (target == null) {
@@ -22,7 +22,7 @@ function state_build(creep) {
         creep.memory.target = target;
     }
     //If there is literally no more construction targets, Idle
-    if (target == null) {
+    if (!target) {
         var path = PathFinder.search(creep.pos, creep.room.find(FIND_STRUCTURES).map(s => {return{pos:s.pos, range:5}}) , {flee:true} ).path
         creep.moveByPath(path)
         return;
@@ -63,7 +63,7 @@ function state_pickup(creep) {
             }});
     }
 
-    if (target == null) {
+    if (!target) {
         var path = PathFinder.search(creep.pos, creep.room.find(FIND_STRUCTURES).map(s => {return{pos:s.pos, range:5}}) , {flee:true} ).path
         creep.moveByPath(path)
         return;
