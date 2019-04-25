@@ -21,7 +21,6 @@ function state_build(creep) {
         target = creep.pos.findClosestByRange(creep.room.getConstructionTargets());
         creep.memory.target = target;
     }
-
     //If there is literally no more construction targets, Idle
     if (target == null) {
         var path = PathFinder.search(creep.pos, creep.room.find(FIND_STRUCTURES).map(s => {return{pos:s.pos, range:5}}) , {flee:true} ).path
@@ -64,7 +63,11 @@ function state_pickup(creep) {
             }});
     }
 
-    if (target == null) return;
+    if (target == null) {
+        var path = PathFinder.search(creep.pos, creep.room.find(FIND_STRUCTURES).map(s => {return{pos:s.pos, range:5}}) , {flee:true} ).path
+        creep.moveByPath(path)
+        return;
+    }
     
     //goto Target
     creep.moveTo(target.pos, {range: 1, ignoreCreeps: true, ignoreRoads: false});

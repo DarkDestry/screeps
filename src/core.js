@@ -17,15 +17,15 @@ global.core.plan = function plan() {
 function DrawBaseFrame(spawn,room) {
     var wall = room.getBaseFrameWall();
     for (var i in wall){
-        var structuresAtPoint = room.lookForAt(LOOK_STRUCTURES,wall[i])
-        structuresAtPoint = _.filter(structuresAtPoint, o => {return o.structureType != STRUCTURE_WALL})
-        if (structuresAtPoint && structuresAtPoint.length != 0) room.visual.circle(wall[i],{fill: 'black', radius: 0.35, stroke: 'white'})
+        var structuresAtPoint = room.lookForAt(LOOK_STRUCTURES,wall[i].x,wall[i].y)
+        structuresAtPoint = _.filter(structuresAtPoint, o => {return o.structureType == STRUCTURE_WALL})
+        if (structuresAtPoint.length == 0) room.visual.circle(wall[i],{fill: 'black', radius: 0.35, stroke: 'white'})
     }
     var rampart = room.getBaseFrameRampart();
     for (var i in rampart){
-        var structuresAtPoint = room.lookForAt(LOOK_STRUCTURES,rampart[i])
-        structuresAtPoint = _.filter(structuresAtPoint, o => {return o.structureType != STRUCTURE_RAMPART})
-        if (structuresAtPoint && structuresAtPoint.length != 0) room.visual.circle(rampart[i],{fill: 'white', radius: 0.35, stroke: 'black'})
+        var structuresAtPoint = room.lookForAt(LOOK_STRUCTURES,rampart[i].x, rampart[i].y)
+        structuresAtPoint = _.filter(structuresAtPoint, o => {return o.structureType == STRUCTURE_RAMPART})
+        if (structuresAtPoint.length == 0) room.visual.circle(rampart[i],{fill: 'white', radius: 0.35, stroke: 'black'})
     }
 }
 
