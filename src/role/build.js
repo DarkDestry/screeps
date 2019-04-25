@@ -1,7 +1,7 @@
 module.exports.config = [[],
     [WORK, CARRY, MOVE],
     [WORK, WORK, CARRY, CARRY, MOVE, MOVE],
-    [WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE]
+    [WORK, WORK, WORK, WORK,  CARRY, CARRY, CARRY, CARRY,  MOVE, MOVE, MOVE, MOVE]
     [WORK, WORK, WORK, WORK, WORK,  CARRY, CARRY, CARRY, CARRY, CARRY,   MOVE, MOVE, MOVE, MOVE, MOVE]
 ]
 
@@ -24,13 +24,25 @@ function state_build(creep) {
 
     //If there is literally no more construction targets, Idle
     if (target == null) {
-        var path = PathFinder.search(creep.pos, creep.room.find(FIND_STRUCTURES).map(s => {return{pos:s.pos, range:3}}) , {flee:true} ).path
+        var path = PathFinder.search(creep.pos, creep.room.find(FIND_STRUCTURES).map(s => {return{pos:s.pos, range:5}}) , {flee:true} ).path
         creep.moveByPath(path)
         return;
     }
     
     //goto Target
-    creep.moveTo(target.pos, {range: 3, ignoreCreeps: false, ignoreRoads: true});
+    creep.moveTo(target.pos, {range: 2, ignoreCreeps: false, ignoreRoads: true});
+
+    //Creates jiggle motion to ensure creep is always moving
+    //If too close, move further
+    if (creep.pos.getRangeTo(target.pos) < 3) {
+        var path = PathFinder.search(creep.pos, {pos:target.pos, range:3} , {flee:true, maxOps:0.1, ignoreCreeps: false, ignoreRoads: true} ).path
+        creep.moveByPath(path)
+    }
+    // else { //Else move closer
+    //     var path = PathFinder.search(creep.pos, {pos:target.pos, range:1} , {flee:false, maxOps:0.1, ignoreCreeps: false, ignoreRoads: true} ).path
+    //     creep.moveByPath(path)
+    // }
+
 
     //Build
     if (target.progress != undefined) creep.build(target)
@@ -55,7 +67,7 @@ function state_pickup(creep) {
     if (target == null) return;
     
     //goto Target
-    creep.moveTo(target.pos, {range: 1, ignoreCreeps: false, ignoreRoads: false});
+    creep.moveTo(target.pos, {range: 1, ignoreCreeps: true, ignoreRoads: false});
 
     
     //Transact with target

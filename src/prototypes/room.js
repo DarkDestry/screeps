@@ -112,36 +112,52 @@ Room.prototype.getEffectiveLevel = function getEffectiveLevel() {
 Room.prototype.getECarryPath = function getECarryPath() {
     var spawns = this.find(FIND_MY_SPAWNS);
     var spawn = spawns[0];
+    var s = spawn.pos;
     var path = [];
     
     switch (this.controller.level) {
         case 2: 
             path = [
-                {x: spawn.pos.x-1, y: spawn.pos.y-2 },
-                {x: spawn.pos.x, y: spawn.pos.y-1 },
-                {x: spawn.pos.x+1, y: spawn.pos.y-2 }
+                {x: s.x-1, y: s.y-2 },
+                {x: s.x, y: s.y-1 },
+                {x: s.x+1, y: s.y-2 }
             ]
             break;
         case 3:
             path = [
-                {x: spawn.pos.x-2, y: spawn.pos.y-3 },
-                {x: spawn.pos.x-1, y: spawn.pos.y-2 },
-                {x: spawn.pos.x, y: spawn.pos.y-1 },
-                {x: spawn.pos.x+1, y: spawn.pos.y-2 },
-                {x: spawn.pos.x+2, y: spawn.pos.y-3 }
+                {x: s.x-2, y: s.y-3 },
+                {x: s.x-1, y: s.y-2 },
+                {x: s.x, y: s.y-1 },
+                {x: s.x+1, y: s.y-2 },
+                {x: s.x+2, y: s.y-3 }
             ]
             break;
         case 4:
             path = [
-                {x: spawn.pos.x-4, y: spawn.pos.y-1 },
-                {x: spawn.pos.x-3, y: spawn.pos.y-2 },
-                {x: spawn.pos.x-2, y: spawn.pos.y-3 },
-                {x: spawn.pos.x-1, y: spawn.pos.y-2 },
-                {x: spawn.pos.x, y: spawn.pos.y-1 },
-                {x: spawn.pos.x+1, y: spawn.pos.y-2 },
-                {x: spawn.pos.x+2, y: spawn.pos.y-3 },
-                {x: spawn.pos.x+3, y: spawn.pos.y-2 },
-                {x: spawn.pos.x+4, y: spawn.pos.y-1 },
+                {x: s.x-4, y: s.y-1 },
+                {x: s.x-3, y: s.y-2 },
+                {x: s.x-2, y: s.y-3 },
+                {x: s.x-1, y: s.y-2 },
+                {x: s.x, y: s.y-1 },
+                {x: s.x+1, y: s.y-2 },
+                {x: s.x+2, y: s.y-3 },
+                {x: s.x+3, y: s.y-2 },
+                {x: s.x+4, y: s.y-1 },
+            ]
+            break;
+        case 5:
+            path = [
+                {x: s.x-5, y: s.y },
+                {x: s.x-4, y: s.y-1 },
+                {x: s.x-3, y: s.y-2 },
+                {x: s.x-2, y: s.y-3 },
+                {x: s.x-1, y: s.y-2 },
+                {x: s.x, y: s.y-1 },
+                {x: s.x+1, y: s.y-2 },
+                {x: s.x+2, y: s.y-3 },
+                {x: s.x+3, y: s.y-2 },
+                {x: s.x+4, y: s.y-1 },
+                {x: s.x+5, y: s.y },
             ]
             break;
     }
@@ -152,7 +168,10 @@ Room.prototype.getConstructionTargets = function getConstructionTargets() {
     var targets = [];
     var constructionSites = this.find(FIND_CONSTRUCTION_SITES);
     for (var i in constructionSites) targets.push(constructionSites[i]);
-    var damagedStructures = this.find(FIND_MY_STRUCTURES, {filter: function(obj){return obj.hits < obj.hitsMax/2}})
+    var damagedStructures = this.find(FIND_MY_STRUCTURES, {filter: function(obj){
+        return (obj.hits < obj.hitsMax/2 && obj.structureType != STRUCTURE_RAMPART) ||
+        (obj.hits < 300000 && obj.structureType == STRUCTURE_RAMPART)
+    }})
     for (var i in damagedStructures) targets.push(damagedStructures[i]);
     var damagedRoads = this.find(FIND_STRUCTURES, {filter: function(obj){return obj.structureType == STRUCTURE_ROAD && obj.hits < obj.hitsMax/2}})
     for (var i in damagedRoads) targets.push(damagedRoads[i]);
@@ -180,4 +199,112 @@ Room.prototype.getSCarryPath = function getSCarryPath() {
         {x: s.x-1, y: s.y},
     ]
     return path;
+}
+
+Room.prototype.getBaseFrameRampart = function getBaseFrameRampart() {
+    var spawns = this.find(FIND_MY_SPAWNS);
+    var spawn = spawns[0];
+    var s = spawn.pos;
+
+    var frame = [
+        {x: s.x-7, y:s.y-5},
+
+        {x: s.x-2, y:s.y-5},
+        {x: s.x+2, y:s.y-5},
+
+        {x: s.x+7, y:s.y-5},
+
+        {x: s.x+7, y:s.y  },
+        {x: s.x+7, y:s.y+4},
+
+        {x: s.x+7, y:s.y+9},
+
+        {x: s.x+2, y:s.y+9},
+        {x: s.x-2, y:s.y+9},
+
+        {x: s.x-7, y:s.y+9},
+
+        {x: s.x-7, y:s.y+4},
+        {x: s.x-7, y:s.y},
+    ]
+    return frame;
+}
+
+Room.prototype.getBaseFrameWall = function getBaseFrameWall() {
+    var spawns = this.find(FIND_MY_SPAWNS);
+    var spawn = spawns[0];
+    var s = spawn.pos;
+
+    var frame = [
+        //{x: s.x-6, y:s.y-4},
+
+        {x: s.x-6, y:s.y-5},
+        {x: s.x-5, y:s.y-5},
+        {x: s.x-4, y:s.y-5},
+        {x: s.x-3, y:s.y-5},
+        //{x: s.x-2, y:s.y-5},
+        {x: s.x-1, y:s.y-5},
+        {x: s.x  , y:s.y-5},
+        {x: s.x+1, y:s.y-5},
+        //{x: s.x+2, y:s.y-5},
+        {x: s.x+3, y:s.y-5},
+        {x: s.x+4, y:s.y-5},
+        {x: s.x+5, y:s.y-5},
+        {x: s.x+6, y:s.y-5},
+
+        //{x: s.x+6, y:s.y-4},
+
+        {x: s.x+7, y:s.y-4},
+        {x: s.x+7, y:s.y-3},
+        {x: s.x+7, y:s.y-2},
+        {x: s.x+7, y:s.y-1},
+        //{x: s.x+7, y:s.y  },
+        {x: s.x+7, y:s.y+1},
+        {x: s.x+7, y:s.y+2},
+        {x: s.x+7, y:s.y+3},
+        //{x: s.x+7, y:s.y+4},
+        {x: s.x+7, y:s.y+5},
+        {x: s.x+7, y:s.y+6},
+        {x: s.x+7, y:s.y+7},
+        {x: s.x+7, y:s.y+8},
+
+        //{x: s.x+6, y:s.y+8},
+
+        {x: s.x+6, y:s.y+9},
+        {x: s.x+5, y:s.y+9},
+        {x: s.x+4, y:s.y+9},
+        {x: s.x+3, y:s.y+9},
+        //{x: s.x+2, y:s.y+9},
+        {x: s.x+1, y:s.y+9},
+        {x: s.x  , y:s.y+9},
+        {x: s.x-1, y:s.y+9},
+        //{x: s.x-2, y:s.y+9},
+        {x: s.x-3, y:s.y+9},
+        {x: s.x-4, y:s.y+9},
+        {x: s.x-5, y:s.y+9},
+        {x: s.x-6, y:s.y+9},
+
+        //{x: s.x-6, y:s.y+8},
+
+        {x: s.x-7, y:s.y+8},
+        {x: s.x-7, y:s.y+7},
+        {x: s.x-7, y:s.y+6},
+        {x: s.x-7, y:s.y+5},
+        //{x: s.x-7, y:s.y+4},
+        {x: s.x-7, y:s.y+3},
+        {x: s.x-7, y:s.y+2},
+        {x: s.x-7, y:s.y+1},
+        //{x: s.x-7, y:s.y},
+        {x: s.x-7, y:s.y-1},
+        {x: s.x-7, y:s.y-2},
+        {x: s.x-7, y:s.y-3},
+        {x: s.x-7, y:s.y-4},
+    ]
+    return frame;
+}
+
+Room.prototype.drawPath = function drawPath(path) {
+    for (var i = 0; i < path.length-1; i++) {
+        this.visual.line(path[i], path[i+1]);
+    }
 }
