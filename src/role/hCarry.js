@@ -1,7 +1,7 @@
 module.exports.config = [[],
     [CARRY, CARRY, CARRY, MOVE, MOVE, MOVE],
-    [CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE],
-    [CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE],
+    [CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE],
+    [CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE],
 ]
 
 module.exports.update = function update(creep) {
@@ -51,7 +51,7 @@ function state_pickup(creep) {
         }
     }
 
-    creep.moveTo(target.pos, {range: range, ignoreCreeps: false, ignoreRoads: true});
+    creep.moveTo(target.pos, {range: range, ignoreCreeps: false, ignoreRoads: false, swampCost: 2});
 
 
     if (creep.pos.getRangeTo(target.pos) == 1) {
