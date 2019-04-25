@@ -20,6 +20,23 @@ module.exports.loop = function () {
         var effectiveLevel = room.getEffectiveLevel();
         var result = undefined;
 
+        //eCarry is critical as when there is a storage, all hCarry will dump to storage instead of spawn;
+        if (effectiveLevel > 3 && room.storage && (!room.memory.sCarry || !Game.creeps[room.memory.sCarry])) {
+            var source = sources[i];
+            var spawn = room.getSpawnableSpawn();
+            room.memory.sCarry = null;
+            if (spawn){
+                do {
+                    result = spawn.spawnCreep (
+                        role.sCarry.config[effectiveLevel--],
+                        makeid(5),
+                        {memory: {role:"sCarry"}}
+                    )
+                } while (result != OK && effectiveLevel > 0)
+            }
+            continue deploy;
+        }
+
         //Deploy Energy Collectors
         for(var i in sources) { //Deploy Carrys if a harvester exist
             var source = sources[i];
@@ -107,20 +124,6 @@ module.exports.loop = function () {
                             role.eCarry.config[effectiveLevel--],
                             makeid(5),
                             {memory: {role:"eCarry"}}
-                        )
-                    } while (result != OK && effectiveLevel > 0)
-                }
-                continue deploy;
-            }
-
-            if (effectiveLevel > 3 && (!room.memory.sCarry || !Game.creeps[room.memory.sCarry])) {
-                room.memory.sCarry = null;
-                if (spawn){
-                    do {
-                        result = spawn.spawnCreep (
-                            role.sCarry.config[effectiveLevel--],
-                            makeid(5),
-                            {memory: {role:"sCarry"}}
                         )
                     } while (result != OK && effectiveLevel > 0)
                 }
