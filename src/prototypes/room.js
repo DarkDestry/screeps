@@ -67,6 +67,7 @@ Room.prototype.getLowestStorageUpgrader = function getLowestStorageUpgrader() {
             this.memory.upgrader[name] = undefined;
             continue;
         }
+        if (upgrader.spawning) continue;
         if (upgrader.totalCarry() < upgrader.carryCapacity/2) {
             max = upgrader.totalCarry();
             currUpgrader = upgrader;
@@ -160,7 +161,7 @@ Room.prototype.getECarryPath = function getECarryPath() {
                 {x: s.x+5, y: s.y },
             ]
             break;
-        case 5:
+        case 6:
             path = [
                 {x: s.x-4, y: s.y+3 },
                 {x: s.x-3, y: s.y+2 },
