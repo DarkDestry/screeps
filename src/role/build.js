@@ -62,7 +62,6 @@ function state_pickup(creep) {
                 return obj.amount > creep.carryCapacity && obj.resourceType == RESOURCE_ENERGY
             }});
     }
-
     if (!target) {
         var path = PathFinder.search(creep.pos, creep.room.find(FIND_STRUCTURES).map(s => {return{pos:s.pos, range:5}}) , {flee:true} ).path
         creep.moveByPath(path)
@@ -70,7 +69,7 @@ function state_pickup(creep) {
     }
     
     //goto Target
-    creep.moveTo(target.pos, {range: 1, ignoreCreeps: true, ignoreRoads: false});
+    creep.moveTo(target.pos, {range: 1, ignoreCreeps: false, ignoreRoads: false});
 
     
     //Transact with target
