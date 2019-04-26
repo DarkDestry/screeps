@@ -14,6 +14,30 @@ global.core.plan = function plan() {
     }
 }
 
+global.core.getCostMatrix = function getCostMatrix(roomName) {
+    let room = Game.rooms[roomName];
+    if (!room) return;
+    if (global.core.costMatrix[roomName]) return global.core.costMatrix[roomName];
+    let costs = new PathFinder.CostMatrix;
+
+    room.find(FIND_STRUCTURES).forEach(function(struct) {
+        if (struct.structureType !== STRUCTURE_CONTAINER &&
+            (struct.structureType !== STRUCTURE_RAMPART ||
+            !struct.my)) {
+        // Can't walk through non-walkable buildings
+        costs.set(struct.pos.x, struct.pos.y, 0xff);
+        }
+    });
+
+    // Avoid creeps in the room
+    room.find(FIND_CREEPS).forEach(function(creep) {
+        costs.set(creep.pos.x, creep.pos.y, 0xff);
+    });
+
+    global.core.costMatrix[roomName] = costs;
+    return costs;
+}
+
 function DrawBaseFrame(spawn,room) {
     var wall = room.getBaseFrameWall();
     for (var i in wall){

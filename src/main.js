@@ -7,6 +7,9 @@ var tower = require("tower");
 
 module.exports.loop = function () {
     global.core.plan()
+    
+    //Clear all cached cost matrices
+    global.core.costMatrix = {}
 
     //Create source memory
     SourceMemory()
