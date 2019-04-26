@@ -17,6 +17,16 @@ module.exports.update = function update(creep) {
     var nextPos = creep.room.getPositionAt(pathPos.x, pathPos.y) //screeps Pos
     creep.moveTo(nextPos, {range: 0, ignoreCreeps: true, ignoreRoads: false});
 
+    //Scan around for pickup targets
+    var pickupTargets = creep.pos.findInRange(FIND_DROPPED_RESOURCES,1,{filter: function(obj){
+        return (obj.resourceType == RESOURCE_ENERGY)
+    }})
+    if (pickupTargets[0] && creep.totalCarry() < creep.carryCapacity) {
+        target = pickupTargets[0];
+        creep.pickup(target);
+        return;
+    }
+
     //Scan around for transfer targets
     var transferTargets = creep.pos.findInRange(FIND_MY_STRUCTURES, 1, {filter: function(obj){
         return (obj.structureType == STRUCTURE_EXTENSION || obj.structureType == STRUCTURE_SPAWN);

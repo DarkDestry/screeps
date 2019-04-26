@@ -17,10 +17,29 @@ function state_dropoff(creep) {
     if (creep.room.storage) target = creep.room.storage;
     else target = creep.room.getLowestStorageSpawn();
     
-    if ((target.structureType == STRUCTURE_SPAWN && target.energy == target.energyCapacity) ||
-        (target.structureType == STRUCTURE_STORAGE && (target.store[RESOURCE_ENERGY]>600000 || _.sum(target.store) > 950000))){
-        var path = PathFinder.search(creep.pos, creep.room.find(FIND_STRUCTURES).map(s => {return{pos:s.pos, range:5}}) , {flee:true} ).path
-        creep.moveByPath(path)
+
+    //IF SPAWN IS FULL DROP OFF ABOVE SPAWN
+    if (target.structureType == STRUCTURE_SPAWN && target.energy == target.energyCapacity) {
+        creep.moveTo(target.pos.x, target.pos.y-1, {range: 0, ignoreCreeps: false});
+        if (creep.pos.x == target.pos.x && creep.pos.y == target.pos.y - 1) {
+            creep.drop(RESOURCE_ENERGY);
+        }
+        return;
+    }
+    //IF STORAGE IS FULL DROP OFF AT THE NEAREST JUNCTION
+    else if ((target.structureType == STRUCTURE_STORAGE && (target.store[RESOURCE_ENERGY]>600000 || _.sum(target.store) > 950000))){
+        var goals = [{pos: creep.room.getPositionAt(target.pos.x, target.pos.y-3), range:0}]
+        if (creep.room.controller.level >= 6) {
+            goals.push({pos: creep.room.getPositionAt(target.pos.x-3, target.pos.y), range:0});
+            goals.push({pos: creep.room.getPositionAt(target.pos.x+3, target.pos.y), range:0});
+        }
+        if (creep.room.controller.level >= 8) goals.push({pos: creep.room.getPositionAt(target.pos.x, target.pos.y-3), range:0})
+
+        var path = Pathfinder.search(creep.pos, goals, {roomCallback: global.core.getCostMatrix})
+        goals.forEach(g => {
+            if (creep.pos.x == g.pos.x && creep.pos.y == g.pos.y) creep.drop(RESOURCE_ENERGY);
+        })
+        return;
     }
     else {
         creep.moveTo(target.pos, {range: 1, ignoreCreeps: false});
