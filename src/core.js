@@ -159,6 +159,17 @@ function ActExtensionPlan(spawn, room) {
                 }
             }
             break;
+        case 6:
+            room.createConstructionSite(spawn.pos.x+3,spawn.pos.y+1,STRUCTURE_EXTENSION)
+            room.createConstructionSite(spawn.pos.x-5,spawn.pos.y+1,STRUCTURE_EXTENSION)
+            room.createConstructionSite(spawn.pos.x-3,spawn.pos.y+1,STRUCTURE_EXTENSION)
+            room.createConstructionSite(spawn.pos.x-5,spawn.pos.y+2,STRUCTURE_EXTENSION)
+            room.createConstructionSite(spawn.pos.x+5,spawn.pos.y+2,STRUCTURE_EXTENSION)
+            room.createConstructionSite(spawn.pos.x-4,spawn.pos.y+2,STRUCTURE_EXTENSION)
+            room.createConstructionSite(spawn.pos.x+4,spawn.pos.y+2,STRUCTURE_EXTENSION)
+            room.createConstructionSite(spawn.pos.x-5,spawn.pos.y+3,STRUCTURE_EXTENSION)
+            room.createConstructionSite(spawn.pos.x+5,spawn.pos.y+3,STRUCTURE_EXTENSION)
+            room.createConstructionSite(spawn.pos.x+3,spawn.pos.y+3,STRUCTURE_EXTENSION)
     }
 }
 
@@ -206,6 +217,19 @@ function DrawExtensionPlan(spawn, room) {
                 room.visual.circle(spawn.pos.x-6,spawn.pos.y,{fill: 'transparent', radius: 0.55, stroke: 'blue'});
                 room.visual.circle(spawn.pos.x+6,spawn.pos.y,{fill: 'transparent', radius: 0.55, stroke: 'blue'});
                 room.visual.circle(spawn.pos.x+5,spawn.pos.y+1,{fill: 'transparent', radius: 0.55, stroke: 'blue'});
+            }
+        case 6:
+            if (room.getEffectiveLevel() < 6){
+                room.visual.circle(spawn.pos.x+3,spawn.pos.y+1,{fill: 'transparent', radius: 0.55, stroke: 'red'});
+                room.visual.circle(spawn.pos.x-5,spawn.pos.y+1,{fill: 'transparent', radius: 0.55, stroke: 'red'});
+                room.visual.circle(spawn.pos.x-3,spawn.pos.y+1,{fill: 'transparent', radius: 0.55, stroke: 'red'});
+                room.visual.circle(spawn.pos.x-5,spawn.pos.y+2,{fill: 'transparent', radius: 0.55, stroke: 'red'});
+                room.visual.circle(spawn.pos.x+5,spawn.pos.y+2,{fill: 'transparent', radius: 0.55, stroke: 'red'});
+                room.visual.circle(spawn.pos.x-4,spawn.pos.y+2,{fill: 'transparent', radius: 0.55, stroke: 'red'});
+                room.visual.circle(spawn.pos.x+4,spawn.pos.y+2,{fill: 'transparent', radius: 0.55, stroke: 'red'});
+                room.visual.circle(spawn.pos.x-5,spawn.pos.y+3,{fill: 'transparent', radius: 0.55, stroke: 'red'});
+                room.visual.circle(spawn.pos.x+5,spawn.pos.y+3,{fill: 'transparent', radius: 0.55, stroke: 'red'});
+                room.visual.circle(spawn.pos.x+3,spawn.pos.y+3,{fill: 'transparent', radius: 0.55, stroke: 'red'});
             }
     }
 

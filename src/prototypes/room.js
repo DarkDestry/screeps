@@ -160,6 +160,27 @@ Room.prototype.getECarryPath = function getECarryPath() {
                 {x: s.x+5, y: s.y },
             ]
             break;
+        case 5:
+            path = [
+                {x: s.x-4, y: s.y+3 },
+                {x: s.x-3, y: s.y+2 },
+                {x: s.x-4, y: s.y+1 },
+                {x: s.x-5, y: s.y },
+                {x: s.x-4, y: s.y-1 },
+                {x: s.x-3, y: s.y-2 },
+                {x: s.x-2, y: s.y-3 },
+                {x: s.x-1, y: s.y-2 },
+                {x: s.x, y: s.y-1 },
+                {x: s.x+1, y: s.y-2 },
+                {x: s.x+2, y: s.y-3 },
+                {x: s.x+3, y: s.y-2 },
+                {x: s.x+4, y: s.y-1 },
+                {x: s.x+5, y: s.y },
+                {x: s.x+4, y: s.y+1 },
+                {x: s.x+3, y: s.y+2 },
+                {x: s.x+4, y: s.y+3 },
+            ]
+            break;
     }
     return path;
 }
