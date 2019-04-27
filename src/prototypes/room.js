@@ -330,3 +330,59 @@ Room.prototype.drawPath = function drawPath(path) {
         this.visual.line(path[i], path[i+1]);
     }
 }
+
+Room.prototype.getAdjacentRooms = function getAdjacentRooms() {
+    if (this.name == "sim") return []
+    //Potential optimization to cache adjacent rooms
+    if (this.memory.adjacentRooms) return this.memory.adjacentRooms;
+    var adjacentRooms = [];
+
+    var coords = RoomNameToCoords(this.name)
+
+    var topEdge = this.lookAtArea(0,0,0,49,true);
+    topEdge = _.filter(topEdge, e => {return e.type == "terrain" && e.terrain != "wall"})
+    if (topEdge.length > 0) {
+        adjacentRooms.push(CoordsToRoomName({x:coords.x,y:coords.y+1}))
+    }
+
+    var bottomEdge = this.lookAtArea(49,0,49,49,true);
+    bottomEdge = _.filter(bottomEdge, e => {return e.type == "terrain" && e.terrain != "wall"})
+    if (bottomEdge.length > 0) {
+        adjacentRooms.push(CoordsToRoomName({x:coords.x,y:coords.y-1}))
+    }
+
+    var leftEdge = this.lookAtArea(0,0,49,0,true);
+    leftEdge = _.filter(leftEdge, e => {return e.type == "terrain" && e.terrain != "wall"})
+    if (leftEdge.length > 0) {
+        adjacentRooms.push(CoordsToRoomName({x:coords.x-1,y:coords.y}))
+    }
+
+    var rightEdge = this.lookAtArea(0,49,49,49,true);
+    rightEdge = _.filter(rightEdge, e => {return e.type == "terrain" && e.terrain != "wall"})
+    if (rightEdge.length > 0) {
+        adjacentRooms.push(CoordsToRoomName({x:coords.x+1,y:coords.y}))
+    }
+
+    return adjacentRooms
+}
+
+function RoomNameToCoords(name) {
+    name = name.replace("N", "+")
+    name = name.replace("E", "+")
+    name = name.replace("W", "-")
+    name = name.replace("S", "-")
+    name = name.match(/\D\d{1,3}/g)
+    name = name.map(e => {return Number(e)})
+    var coords = {x: name[0], y: name[1]};
+    if (coords.x < 0) coords.x--;
+    if (coords.y < 0) coords.y--;
+    return coords
+}
+
+//Coords System: x0 y0 is E0N0, x-1 y-1 is W0S0
+function CoordsToRoomName(coords) {
+    var name = ""
+    name += coords.x > 0? "E" + coords.x : "W" + ((coords.x*-1)-1)
+    name += coords.y > 0? "N" + coords.y : "S" + ((coords.y*-1)-1)
+    return name
+}
