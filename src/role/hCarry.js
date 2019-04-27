@@ -34,8 +34,10 @@ function state_dropoff(creep) {
             goals.push({pos: creep.room.getPositionAt(target.pos.x+3, target.pos.y), range:0});
         }
         if (creep.room.controller.level >= 8) goals.push({pos: creep.room.getPositionAt(target.pos.x, target.pos.y-3), range:0})
-
-        var path = Pathfinder.search(creep.pos, goals, {roomCallback: global.core.getCostMatrix})
+        
+        var path = PathFinder.search(creep.pos, goals, {roomCallback: global.core.getCostMatrix}).path
+        creep.moveByPath(path);
+        creep.room.drawPath(path)
         goals.forEach(g => {
             if (creep.pos.x == g.pos.x && creep.pos.y == g.pos.y) creep.drop(RESOURCE_ENERGY);
         })
