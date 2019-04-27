@@ -7,7 +7,7 @@ module.exports.config = [[],
 ]
 
 module.exports.update = function update(creep) {
-    RoadLaying(creep);
+    //RoadLaying(creep);
     if (creep.totalCarry() != creep.carryCapacity) state_pickup(creep);
     else state_dropoff(creep);
 }
@@ -37,7 +37,6 @@ function state_dropoff(creep) {
         
         var path = PathFinder.search(creep.pos, goals, {roomCallback: global.core.getCostMatrix}).path
         creep.moveByPath(path);
-        creep.room.drawPath(path)
         goals.forEach(g => {
             if (creep.pos.x == g.pos.x && creep.pos.y == g.pos.y) creep.drop(RESOURCE_ENERGY);
         })

@@ -45,13 +45,16 @@ function state_pickup(creep) {
     }
 
     if (!target){
-        var spawnInRange = creep.room.find(FIND_MY_SPAWNS, 3)
-        if (spawnInRange.length > 0) creep.moveTo(spawnInRange[0], {range: 4, flee:true})
+        creep.moveTo(creep.room.controller, {range:2})
         return;
     }
     
     //goto Target
     creep.moveTo(target.pos, {range: 1, ignoreCreeps: false, ignoreRoads: true});
+
+    var dropsInRange = creep.pos.findInRange(FIND_DROPPED_RESOURCES,1,{filter: {resourceType: RESOURCE_ENERGY}})
+    if (dropsInRange && dropsInRange[0])
+        creep.pickup(dropsInRange[0])
 
     
     //Transact with target
