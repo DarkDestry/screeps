@@ -18,10 +18,23 @@ module.exports.loop = function () {
     deploy:
     for (var roomName in Game.rooms) {
         var room = Game.rooms[roomName];
+        if (!room.controller.my) continue; //Qualify Rooms for creep deployment
+
         var sources = room.find(FIND_SOURCES)
         var spawns = room.find(FIND_MY_SPAWNS);
         var effectiveLevel = room.getEffectiveLevel();
         var result = undefined;
+
+        //append to sources all outpost sources
+        if (!room.memory.outposts) room.memory.outposts = [];
+        for (var i in room.memory.outposts) {
+            try {
+                if (Game.rooms[room.memory.outposts[i]])
+                Game.rooms[room.memory.outposts[i]].find(FIND_SOURCES).forEach(element => {
+                    sources.push(element);
+                });
+            } catch (err) {console.log(err)}
+        }
 
         //eCarry is critical as when there is a storage, all hCarry will dump to storage instead of spawn;
         if (effectiveLevel > 3 && room.storage && (!room.memory.sCarry || !Game.creeps[room.memory.sCarry])) {
@@ -106,19 +119,7 @@ module.exports.loop = function () {
                 continue deploy;
             }
 
-            //Deploy builders
-            if (room.getConstructionTargets().length/2 > room.getBuilderCount()) {
-                if (spawn)
-                    do {
-                        result = spawn.spawnCreep (
-                            role.build.config[effectiveLevel--],
-                            makeid(5),
-                            {memory: {role: "build"}}
-                        )
-                    } while (result != OK && effectiveLevel > 0)
-                continue deploy
-            }
-
+            //Deploy extension Carrys
             if (effectiveLevel > 1 && (!room.memory.eCarry || !Game.creeps[room.memory.eCarry])) {
                 room.memory.eCarry = null;
                 if (spawn){
@@ -132,23 +133,72 @@ module.exports.loop = function () {
                 }
                 continue deploy;
             }
+            
+            if (effectiveLevel > 1) {
+                var adjacentRooms = room.getAdjacentRooms();
+                if (!room.memory.observers) room.memory.observers = {}
+                for (var i in adjacentRooms) {
+                    var spawnObserver = false;
+                    if (room.memory.observers[adjacentRooms[i]]) {
+                        var observer = Game.creeps[room.memory.observers[adjacentRooms[i]]]
+                        if (!observer) {
+                            spawnObserver = true; 
+                            room.memory.observers[adjacentRooms[i]] = null
+                        }
+                        else if (observer.ticksToLive < 100) {
+                            spawnObserver = true; 
+                            room.memory.observers[adjacentRooms[i]] = null
+                        }
+                    }
+                    else spawnObserver = true;
+
+                    if (spawnObserver) {
+                        if (spawn){
+                            do {
+                                result = spawn.spawnCreep (
+                                    role.observe.config[effectiveLevel--],
+                                    makeid(5),
+                                    {memory: {role:"observe", target: adjacentRooms[i]}}
+                                )
+                            } while (result != OK && effectiveLevel > 0)
+                        }
+                        continue deploy;
+                    }
+                }
+            }
+
+            //Deploy builders
+            if (room.getConstructionTargets().length/2 > room.getBuilderCount()) {
+                if (spawn)
+                    do {
+                        result = spawn.spawnCreep (
+                            role.build.config[effectiveLevel--],
+                            makeid(5),
+                            {memory: {role: "build"}}
+                        )
+                    } while (result != OK && effectiveLevel > 0)
+                continue deploy
+            }
+        } //if Sources Saturated END
+
+
+        //Tower Logic
+        var towers = room.find(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}})
+        for (var i in towers) {
+            try {
+                tower.update(towers[i])
+            } catch (err) {
+                errCache = err;
+            }
         }
-    }
+
+    } // Room For loop END
 
     for (creep in Memory.creeps){
         if (!Game.creeps[creep]) Memory.creeps[creep] = undefined;
     }
 
     var errCache;
-    //Tower Logic
-    var towers = room.find(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}})
-    for (var i in towers) {
-        try {
-            tower.update(towers[i])
-        } catch (err) {
-            errCache = err;
-        }
-    }
 
     //Creep logic
     for (var name in Game.creeps) {

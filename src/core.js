@@ -4,6 +4,9 @@ global.core.plan = function plan() {
     //Get RCL
     for (var name in Game.rooms) {
         var room = Game.rooms[name];
+
+        if (!room.controller.my) continue;
+
         var spawns = room.find(FIND_MY_SPAWNS);
         var spawn = spawns[0];
         DrawExtensionPlan(spawn, room);
@@ -34,6 +37,15 @@ global.core.getCostMatrix = function getCostMatrix(roomName) {
     room.find(FIND_CREEPS).forEach(function(creep) {
         costs.set(creep.pos.x, creep.pos.y, 0xff);
     });
+
+    room.find(FIND_CONSTRUCTION_SITES).forEach(function(cs) {
+        if (cs.structureType !== STRUCTURE_CONTAINER &&
+            cs.structureType !== STRUCTURE_ROAD &&
+            (cs.structureType !== STRUCTURE_RAMPART ||
+            !cs.my)) {
+                costs.set(cs.pos.x, cs.pos.y, 0xff);
+            }
+    })
 
     global.core.costMatrix[roomName] = costs;
     return costs;

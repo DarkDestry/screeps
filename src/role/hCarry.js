@@ -7,6 +7,7 @@ module.exports.config = [[],
 ]
 
 module.exports.update = function update(creep) {
+    if (!creep.memory.originRoom) creep.memory.originRoom = creep.room.name;
     //RoadLaying(creep);
     if (creep.totalCarry() != creep.carryCapacity) state_pickup(creep);
     else state_dropoff(creep);
@@ -14,9 +15,11 @@ module.exports.update = function update(creep) {
 
 function state_dropoff(creep) {
     var target = undefined;
-    if (creep.room.storage) target = creep.room.storage;
-    else target = creep.room.getLowestStorageSpawn();
-    
+
+    var originRoom = Game.rooms[creep.memory.originRoom]
+
+    if (originRoom.storage) target = originRoom.storage;
+    else target = originRoom.getLowestStorageSpawn();
 
     //IF SPAWN IS FULL DROP OFF ABOVE SPAWN
     if (target.structureType == STRUCTURE_SPAWN && target.energy == target.energyCapacity) {
@@ -28,12 +31,12 @@ function state_dropoff(creep) {
     }
     //IF STORAGE IS FULL DROP OFF AT THE NEAREST JUNCTION
     else if ((target.structureType == STRUCTURE_STORAGE && (target.store[RESOURCE_ENERGY]>600000 || _.sum(target.store) > 950000))){
-        var goals = [{pos: creep.room.getPositionAt(target.pos.x, target.pos.y-3), range:0}]
-        if (creep.room.controller.level >= 6) {
-            goals.push({pos: creep.room.getPositionAt(target.pos.x-3, target.pos.y), range:0});
-            goals.push({pos: creep.room.getPositionAt(target.pos.x+3, target.pos.y), range:0});
+        var goals = [{pos: originRoom.getPositionAt(target.pos.x, target.pos.y-3), range:0}]
+        if (originRoom.controller.level >= 6) {
+            goals.push({pos: originRoom.getPositionAt(target.pos.x-3, target.pos.y), range:0});
+            goals.push({pos: originRoom.getPositionAt(target.pos.x+3, target.pos.y), range:0});
         }
-        if (creep.room.controller.level >= 8) goals.push({pos: creep.room.getPositionAt(target.pos.x, target.pos.y-3), range:0})
+        if (originRoom.controller.level >= 8) goals.push({pos: originRoom.getPositionAt(target.pos.x, target.pos.y-3), range:0})
         
         var path = PathFinder.search(creep.pos, goals, {roomCallback: global.core.getCostMatrix}).path
         creep.moveByPath(path);
@@ -62,6 +65,10 @@ function state_pickup(creep) {
     
     var range = 2
     var target = Game.getObjectById(creep.memory.target.id);
+
+    //Account for cross room no vision
+    if (target == null) return;
+
     if (target.memory.carry == null) target.memory.carry = creep.name;
 
     //If theres a container nearby, go collect from the container instead

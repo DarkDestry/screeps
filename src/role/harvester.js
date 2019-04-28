@@ -11,6 +11,9 @@ module.exports.update = function update(creep) {
     
     var target = Game.getObjectById(creep.memory.target.id);
 
+    //Account for cross room no vision
+    if (target == null) return;
+
     creep.moveTo(target.pos, {range: 1, ignoreCreeps: false});
 
     if (target.memory.harvester == null) target.memory.harvester = creep.name;
