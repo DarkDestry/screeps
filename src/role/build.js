@@ -24,7 +24,7 @@ function state_build(creep) {
     }
     //If there is literally no more construction targets, Idle
     if (!target) {
-        var path = PathFinder.search(creep.pos, creep.room.find(FIND_STRUCTURES).map(s => {return{pos:s.pos, range:5}}) , {flee:true, ignoreRoads: false, roomCallback: global.core.getCostMatrix} ).path
+        var path = PathFinder.search(creep.pos, creep.room.find(FIND_STRUCTURES).map(s => {return{pos:s.pos, range:5}}) , {flee:true, ignoreRoads: false, roomCallback: global.core.getCostMatrix, maxOps: 100} ).path
         creep.moveByPath(path)
         creep.room.drawPath(path)
         return;
@@ -36,7 +36,7 @@ function state_build(creep) {
     //Creates jiggle motion to ensure creep is always moving
     //If too close, move further
     if (creep.pos.getRangeTo(target.pos) < 3) {
-        var path = PathFinder.search(creep.pos, {pos:target.pos, range:4} , {flee:true, maxOps:0.1, ignoreCreeps: false, ignoreRoads: false, roomCallback: global.core.getCostMatrix} ).path
+        var path = PathFinder.search(creep.pos, {pos:target.pos, range:4} , {flee:true, ignoreCreeps: false, ignoreRoads: false, roomCallback: global.core.getCostMatrix, maxOps: 100} ).path
         creep.moveByPath(path)
     }
     // else { //Else move closer

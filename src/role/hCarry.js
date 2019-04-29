@@ -23,7 +23,7 @@ function state_dropoff(creep) {
 
     //IF SPAWN IS FULL DROP OFF ABOVE SPAWN
     if (target.structureType == STRUCTURE_SPAWN && target.energy == target.energyCapacity) {
-        creep.moveTo(target.pos.x, target.pos.y-1, {range: 0, ignoreCreeps: false});
+        creep.moveTo(originRoom.getPositionAt(target.pos.x, target.pos.y-1), {range: 0, ignoreCreeps: false});
         if (creep.pos.x == target.pos.x && creep.pos.y == target.pos.y - 1) {
             creep.drop(RESOURCE_ENERGY);
         }

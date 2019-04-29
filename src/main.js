@@ -5,7 +5,11 @@ require("require")
 var role = require("role");
 var tower = require("tower");
 
+const profiler = require('screeps-profiler');
+profiler.enable();
+
 module.exports.loop = function () {
+profiler.wrap(function() {
     global.core.plan()
     
     //Clear all cached cost matrices
@@ -26,13 +30,13 @@ module.exports.loop = function () {
         var result = undefined;
 
         //append to sources all outpost sources
-        if (!room.memory.outposts) room.memory.outposts = [];
+        if (!room.memory.outposts) room.memory.outposts = {};
         for (var i in room.memory.outposts) {
             try {
                 if (Game.rooms[room.memory.outposts[i]])
-                Game.rooms[room.memory.outposts[i]].find(FIND_SOURCES).forEach(element => {
-                    sources.push(element);
-                });
+                    Game.rooms[room.memory.outposts[i]].find(FIND_SOURCES).forEach(element => {
+                        sources.push(element);
+                    });
             } catch (err) {console.log(err)}
         }
 
@@ -56,8 +60,8 @@ module.exports.loop = function () {
         //Deploy Energy Collectors
         for(var i in sources) { //Deploy Carrys if a harvester exist
             var source = sources[i];
-            //If Carry is dead
-            if (Game.creeps[source.memory.harvester] && (!source.memory.carry || !Game.creeps[source.memory.carry])) {
+            //If Carry is dead (first source check is for no vision check)
+            if (source && Game.creeps[source.memory.harvester] && (!source.memory.carry || !Game.creeps[source.memory.carry])) {
                 source.memory.carry = null;
                 var spawn = room.getSpawnableSpawn();
                 if (spawn)
@@ -211,6 +215,7 @@ module.exports.loop = function () {
     }
     if (errCache) throw errCache
     
+});
 }
 
 function makeid(length) {
