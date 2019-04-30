@@ -366,6 +366,23 @@ Room.prototype.getAdjacentRooms = function getAdjacentRooms() {
     return adjacentRooms
 }
 
+if (!Room.prototype._createConstructionSite) {
+    Room.prototype._createConstructionSite = Room.prototype.createConstructionSite
+    Room.prototype.createConstructionSite = function createConstructionSite(x,y,structureType) {
+        var structuresAtPos = this.lookForAt(LOOK_STRUCTURES, x, y)
+        structuresAtPos = _.filter(structuresAtPos, s => {return s.structureType == structureType})
+        if (structuresAtPos.length > 0) {
+            return ERR_INVALID_TARGET;
+        }
+        var constructionSites = this.lookForAt(LOOK_CONSTRUCTION_SITES, x, y)
+        constructionSites = _.filter(structuresAtPos, c => {return c.structureType == structureType})
+        if (constructionSites.length > 0) {
+            return ERR_INVALID_TARGET;
+        }
+        return this._createConstructionSite(x,y,structureType)
+    }
+}
+
 function RoomNameToCoords(name) {
     name = name.replace("N", "+")
     name = name.replace("E", "+")
