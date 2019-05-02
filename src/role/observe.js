@@ -13,7 +13,7 @@ module.exports.update = function update(creep){
 
     if (creep.room.name == creep.memory.target) {
 
-        if (creep.room.controller && creep.room.find(FIND_HOSTILE_STRUCTURES).length == 0 && 
+        if (creep.room.controller && creep.room.find(FIND_HOSTILE_CREEPS).length == 0 && 
             !Game.rooms[creep.memory.originRoom].memory.outposts[creep.room.name])
             Game.rooms[creep.memory.originRoom].memory.outposts[creep.room.name] = creep.room.name
     }
