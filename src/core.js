@@ -14,6 +14,8 @@ global.core.plan = function plan() {
         DrawRoadPlan(spawn, room);
         ActRoadPlan(spawn, room);
         DrawBaseFrame(spawn, room);
+        DrawLinkPlan(spawn, room);
+        ActLinkPlan(spawn, room);
     }
 }
 
@@ -49,6 +51,79 @@ global.core.getCostMatrix = function getCostMatrix(roomName) {
 
     global.core.costMatrix[roomName] = costs;
     return costs;
+}
+
+function DrawLinkPlan(spawn, room) {
+    if (!room.storage) return;
+    var sources = room.find(FIND_SOURCES) 
+    var storage = room.storage;
+    var furthestSource = undefined;
+    var furthestDistance = 0;
+
+    //Ensure That there is a link at spawn already
+    if (storage.pos.findInRange(FIND_MY_STRUCTURES,2,{filter: {structureType: STRUCTURE_LINK}}).length == 0) return;
+    
+    for (var i in sources) {
+        //Disqualify sources with a link nearby
+        if (sources[i].pos.findInRange(FIND_MY_STRUCTURES,2,{filter: {structureType: STRUCTURE_LINK}}).length > 0) continue;
+        if (sources[i].pos.findInRange(FIND_CONSTRUCTION_SITES,2,{filter: {structureType: STRUCTURE_LINK}}).length > 0) continue;
+
+
+        var distance = storage.pos.findPathTo(sources[i]).length;
+        if (distance > furthestDistance) {
+            furthestDistance = distance;
+            furthestSource = sources[i];
+        }
+    }
+
+    if (!furthestSource) return
+
+    var path = furthestSource.pos.findPathTo(storage, {ignoreCreeps: true});
+
+    var pos = path[1];
+    var poly = [
+        [pos.x + 0.2, pos.y],
+        [pos.x, pos.y + 0.4],
+        [pos.x - 0.2, pos.y],
+        [pos.x, pos.y - 0.4],
+        [pos.x + 0.2, pos.y],
+    ]
+    room.visual.poly(poly,{fill: 'yellow', radius: 0.55, stroke: 'white'});
+}
+
+function ActLinkPlan(spawn, room) {
+    if (!room.storage) return;
+    var sources = room.find(FIND_SOURCES) 
+    var storage = room.storage;
+    var furthestSource = undefined;
+    var furthestDistance = 0;
+
+    //Ensure That there is a link at spawn already
+    if (storage.pos.findInRange(FIND_MY_STRUCTURES,2,{filter: {structureType: STRUCTURE_LINK}}).length == 0) return;
+    
+    for (var i in sources) {
+        //Disqualify sources with a link nearby
+        if (sources[i].pos.findInRange(FIND_MY_STRUCTURES,2,{filter: {structureType: STRUCTURE_LINK}}).length > 0) continue;
+        if (sources[i].pos.findInRange(FIND_CONSTRUCTION_SITES,2,{filter: {structureType: STRUCTURE_LINK}}).length > 0) continue;
+
+
+        var distance = storage.pos.findPathTo(sources[i]).length;
+        if (distance > furthestDistance) {
+            furthestDistance = distance;
+            furthestSource = sources[i];
+        }
+    }
+
+    if (!furthestSource) return
+
+    var path = furthestSource.pos.findPathTo(storage, {ignoreCreeps: true});
+
+    var pos = path[1];
+    room.createConstructionSite (pos.x, pos.y, STRUCTURE_LINK);
+    if (room.getTerrain().get(pos.x+1, pos.y) != TERRAIN_MASK_WALL) room.createConstructionSite(pos.x+1, pos.y,STRUCTURE_ROAD)
+    if (room.getTerrain().get(pos.x, pos.y+1) != TERRAIN_MASK_WALL) room.createConstructionSite(pos.x, pos.y+1,STRUCTURE_ROAD)
+    if (room.getTerrain().get(pos.x-1, pos.y) != TERRAIN_MASK_WALL) room.createConstructionSite(pos.x-1, pos.y,STRUCTURE_ROAD)
+    if (room.getTerrain().get(pos.x, pos.y-1) != TERRAIN_MASK_WALL) room.createConstructionSite(pos.x, pos.y-1,STRUCTURE_ROAD)
 }
 
 function DrawBaseFrame(spawn,room) {
@@ -161,6 +236,7 @@ function ActExtensionPlan(spawn, room) {
             room.createConstructionSite(s.x+6,s.y,STRUCTURE_EXTENSION)
             room.createConstructionSite(s.x+5,s.y+1,STRUCTURE_EXTENSION)
             room.createConstructionSite(s.x+2,s.y,STRUCTURE_TOWER)
+            room.createConstructionSite(s.x,s.y+4, STRUCTURE_LINK)
             //Place Roads
             room.createConstructionSite(s.x-4,s.y+1,STRUCTURE_ROAD)
             room.createConstructionSite(s.x-6,s.y-1,STRUCTURE_ROAD)
@@ -181,8 +257,6 @@ function ActExtensionPlan(spawn, room) {
             room.createConstructionSite(s.x+6,s.y-2,STRUCTURE_ROAD)
             room.createConstructionSite(s.x+6,s.y-1,STRUCTURE_ROAD)
             room.createConstructionSite(s.x+4,s.y+1,STRUCTURE_ROAD)
-
-            //Place harvester roads
 
             //place frame
             if(room.storage.store[RESOURCE_ENERGY] > 200000) {

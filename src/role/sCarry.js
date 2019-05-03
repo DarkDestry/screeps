@@ -19,16 +19,25 @@ module.exports.update = function update(creep) {
 
     //Scan around for transfer targets
     var transferTargets = creep.pos.findInRange(FIND_MY_STRUCTURES, 1, {filter: function(obj){
-        return (obj.structureType == STRUCTURE_EXTENSION || obj.structureType == STRUCTURE_SPAWN || obj.structureType == STRUCTURE_STORAGE || obj.structureType == STRUCTURE_TOWER);
+        return (obj.structureType == STRUCTURE_EXTENSION || obj.structureType == STRUCTURE_SPAWN || obj.structureType == STRUCTURE_STORAGE || obj.structureType == STRUCTURE_TOWER || obj.structureType == STRUCTURE_LINK);
     }})
+    var linkInRange = creep.pos.findInRange(FIND_MY_STRUCTURES, 1, {filter: {structureType: STRUCTURE_LINK}}).length > 0
     var target = undefined;
     for (var i in transferTargets) {
         target = transferTargets[i];
         if ((target.structureType == STRUCTURE_EXTENSION || target.structureType == STRUCTURE_SPAWN || target.structureType == STRUCTURE_TOWER)  && target.energy < target.energyCapacity) {
             creep.transfer(target, RESOURCE_ENERGY);
         } 
-        if (target.structureType == STRUCTURE_STORAGE && target.store[RESOURCE_ENERGY] > 0 && creep.totalCarry() < creep.carryCapacity) {
+        if (!linkInRange && target.structureType == STRUCTURE_STORAGE && target.store[RESOURCE_ENERGY] > 0 && creep.totalCarry() < creep.carryCapacity) {
             creep.withdraw(target, RESOURCE_ENERGY);
+            break;
+        }
+        if ((target.structureType == STRUCTURE_LINK && target.energy > 0)) {
+            if (creep.totalCarry() == creep.carryCapacity)
+                creep.transfer(creep.room.storage, RESOURCE_ENERGY)
+            else{
+                creep.withdraw(target, RESOURCE_ENERGY)
+            }
             break;
         }
     }

@@ -2,14 +2,17 @@
 
 require("core");
 require("require")
+var stats = require("stats");
 var role = require("role");
 var tower = require("tower");
+var link = require("link");
 
 const profiler = require('screeps-profiler');
 profiler.enable();
 
 module.exports.loop = function () {
 profiler.wrap(function() {
+    var errCache;
     global.core.plan()
     
     //Clear all cached cost matrices
@@ -81,6 +84,10 @@ profiler.wrap(function() {
             //If harvester is dead
             if (!source.memory.harvester || !Game.creeps[source.memory.harvester]) {
                 source.memory.harvester = null;
+                //Check for if theres a link replacing the hCarry
+                if (creep.pos.findInRange(FIND_MY_STRUCTURES, 2, {
+                    filter: { structureType: STRUCTURE_LINK }
+                }).length > 0) continue;
                 var spawn = room.getSpawnableSpawn();
                 if (spawn)
                     do {
@@ -195,14 +202,23 @@ profiler.wrap(function() {
                 errCache = err;
             }
         }
+        
+        //Link Logic
+        var links = room.find(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_LINK}})
+        for (var i in links) {
+            try {
+                link.update(links[i])
+            } catch (err) {
+                errCache = err;
+            }
+        }
 
-    } // Room For loop END
+    } // Room -For- loop END
 
     for (creep in Memory.creeps){
         if (!Game.creeps[creep]) Memory.creeps[creep] = undefined;
     }
 
-    var errCache;
 
     //Creep logic
     for (var name in Game.creeps) {
@@ -215,6 +231,7 @@ profiler.wrap(function() {
     }
     if (errCache) throw errCache
     
+    stats.exportStats()
 });
 }
 
