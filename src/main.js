@@ -85,7 +85,7 @@ profiler.wrap(function() {
             if (!source.memory.harvester || !Game.creeps[source.memory.harvester]) {
                 source.memory.harvester = null;
                 //Check for if theres a link replacing the hCarry
-                if (creep.pos.findInRange(FIND_MY_STRUCTURES, 2, {
+                if (source.pos.findInRange(FIND_MY_STRUCTURES, 2, {
                     filter: { structureType: STRUCTURE_LINK }
                 }).length > 0) continue;
                 var spawn = room.getSpawnableSpawn();
