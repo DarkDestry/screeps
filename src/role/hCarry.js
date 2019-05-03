@@ -67,7 +67,11 @@ function state_pickup(creep) {
     var target = Game.getObjectById(creep.memory.target.id);
 
     //Account for cross room no vision
-    if (target == null) return;
+    if (target == null) {
+        var path = PathFinder.search(creep.pos, creep.room.find(FIND_STRUCTURES).map(s => {return{pos:s.pos, range:5}}) , {flee:true} ).path
+        creep.moveByPath(path)
+        return;
+    }
 
     if (target.memory.carry == null) target.memory.carry = creep.name;
 
