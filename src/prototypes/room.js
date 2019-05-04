@@ -366,6 +366,23 @@ Room.prototype.getAdjacentRooms = function getAdjacentRooms() {
     return adjacentRooms
 }
 
+Room.prototype.findHostileCreeps = function findHostileCreeps() {
+    
+    var targets = []
+
+    this.find(FIND_HOSTILE_CREEPS).forEach(element => {
+        targets.push(element)
+    });
+
+    for (name in this.memory.outposts) {
+        Game.rooms[name].find(FIND_HOSTILE_CREEPS).forEach(element => {
+            targets.push(element)
+        });
+    }
+
+    return targets;
+}
+
 if (!Room.prototype._createConstructionSite) {
     Room.prototype._createConstructionSite = Room.prototype.createConstructionSite
     Room.prototype.createConstructionSite = function createConstructionSite(x,y,structureType) {

@@ -60,6 +60,21 @@ profiler.wrap(function() {
             continue deploy;
         }
 
+        //Deploy Defense (shouldnt be held up bu harvesters as they are being killed in outpost rooms)
+        if (room.findHostileCreeps().length > 0 && (!room.memory.defender || !Game.creeps[room.memory.defender])) {
+            room.memory.defender = null;
+            var spawn = room.getSpawnableSpawn();
+            if (spawn)
+                do {
+                    result = spawn.spawnCreep (
+                        role.defense.config[effectiveLevel--],
+                        makeid(5),
+                        {memory: {role: "defense"}}
+                    )
+                } while (result != OK && effectiveLevel > 0)
+            continue deploy;
+        }
+
         //Deploy Energy Collectors
         for(var i in sources) { //Deploy Carrys if a harvester exist
             var source = sources[i];
