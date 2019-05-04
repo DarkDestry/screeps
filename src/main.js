@@ -66,6 +66,10 @@ profiler.wrap(function() {
             //If Carry is dead (first source check is for no vision check)
             if (source && Game.creeps[source.memory.harvester] && (!source.memory.carry || !Game.creeps[source.memory.carry])) {
                 source.memory.carry = null;
+                //Check for if theres a link replacing the hCarry
+                if (source.pos.findInRange(FIND_MY_STRUCTURES, 2, {
+                    filter: { structureType: STRUCTURE_LINK }
+                }).length > 0) continue;
                 var spawn = room.getSpawnableSpawn();
                 if (spawn)
                     do {
@@ -84,10 +88,6 @@ profiler.wrap(function() {
             //If harvester is dead
             if (!source.memory.harvester || !Game.creeps[source.memory.harvester]) {
                 source.memory.harvester = null;
-                //Check for if theres a link replacing the hCarry
-                if (source.pos.findInRange(FIND_MY_STRUCTURES, 2, {
-                    filter: { structureType: STRUCTURE_LINK }
-                }).length > 0) continue;
                 var spawn = room.getSpawnableSpawn();
                 if (spawn)
                     do {
@@ -193,6 +193,14 @@ profiler.wrap(function() {
         } //if Sources Saturated END
 
 
+
+    } // Room -For- loop END
+
+    
+    for (var roomName in Game.rooms) {
+        var room = Game.rooms[roomName];
+        if (!room.controller.my) continue; //Qualify Rooms for tower and link logic
+
         //Tower Logic
         var towers = room.find(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}})
         for (var i in towers) {
@@ -212,8 +220,8 @@ profiler.wrap(function() {
                 errCache = err;
             }
         }
+    }
 
-    } // Room -For- loop END
 
     for (creep in Memory.creeps){
         if (!Game.creeps[creep]) Memory.creeps[creep] = undefined;

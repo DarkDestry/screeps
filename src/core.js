@@ -281,6 +281,13 @@ function ActExtensionPlan(spawn, room) {
             room.createConstructionSite(spawn.pos.x-5,spawn.pos.y+3,STRUCTURE_EXTENSION)
             room.createConstructionSite(spawn.pos.x+5,spawn.pos.y+3,STRUCTURE_EXTENSION)
             room.createConstructionSite(spawn.pos.x+3,spawn.pos.y+3,STRUCTURE_EXTENSION)
+
+            room.createConstructionSite(spawn.pos.x-6,spawn.pos.y-1,STRUCTURE_ROAD)
+            room.createConstructionSite(spawn.pos.x+6,spawn.pos.y-1,STRUCTURE_ROAD)
+            room.createConstructionSite(spawn.pos.x-6,spawn.pos.y-2,STRUCTURE_ROAD)
+            room.createConstructionSite(spawn.pos.x+6,spawn.pos.y-2,STRUCTURE_ROAD)
+            room.createConstructionSite(spawn.pos.x-6,spawn.pos.y-3,STRUCTURE_ROAD)
+            room.createConstructionSite(spawn.pos.x+6,spawn.pos.y-3,STRUCTURE_ROAD)
     }
 }
 
