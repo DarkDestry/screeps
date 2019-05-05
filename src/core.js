@@ -156,9 +156,10 @@ function DrawRoadPlan(spawn, room) {
     
     //source road
     var sources = room.find(FIND_SOURCES);
+    for (var name in room.memory.outposts) {if (Game.rooms[name]) Game.rooms[name].find(FIND_SOURCES).forEach(s => {sources.push(s)})}
     for (var i in sources) {
         var source = sources[i];
-        var path = PathFinder.search(source.pos, room.getBaseFrameRampart().map(p => {return room.getPositionAt(p.x,p.y)}),{heuristicWeight: 1.5}).path;
+        var path = PathFinder.search(source.pos, room.getBaseFrameRampart().map(p => {return room.getPositionAt(p.x,p.y)}),{heuristicWeight: 1.5, swampCost: 2}).path;
         room.drawPath(path);
     }
 }
@@ -183,11 +184,12 @@ function ActRoadPlan(spawn, room) {
     //source road
     if (room.controller.level >= 5 && room.storage.store[RESOURCE_ENERGY] > 100000) {
         var sources = room.find(FIND_SOURCES);
+        for (var name in room.memory.outposts) {if (Game.rooms[name]) Game.rooms[name].find(FIND_SOURCES).forEach(s => {sources.push(s)})}
         for (var i in sources) {
             var source = sources[i];
-            var path = PathFinder.search(source.pos, room.getBaseFrameRampart().map(p => {return room.getPositionAt(p.x,p.y)}),{heuristicWeight: 1.5}).path;
+            var path = PathFinder.search(source.pos, room.getBaseFrameRampart().map(p => {return room.getPositionAt(p.x,p.y)}),{heuristicWeight: 1.5, swampCost: 2}).path;
             for (var i in path) {
-                room.createConstructionSite(path[i], STRUCTURE_ROAD);
+                Game.rooms[path[i].roomName].createConstructionSite(path[i], STRUCTURE_ROAD);
             }
         }
     }

@@ -197,6 +197,14 @@ Room.prototype.getConstructionTargets = function getConstructionTargets() {
     for (var i in damagedStructures) targets.push(damagedStructures[i]);
     var damagedRoads = this.find(FIND_STRUCTURES, {filter: function(obj){return obj.structureType == STRUCTURE_ROAD && obj.hits < obj.hitsMax/2}})
     for (var i in damagedRoads) targets.push(damagedRoads[i]);
+
+    //Outpost Rooms
+    for (var name in this.memory.outposts) {
+        if(!Game.rooms[name]) continue;
+        Game.rooms[name].find(FIND_CONSTRUCTION_SITES).forEach(c => {targets.push(c)});
+        Game.rooms[name].find(FIND_STRUCTURES, {filter: function(obj){return obj.structureType == STRUCTURE_ROAD && obj.hits < obj.hitsMax/2}}).forEach(r => {targets.push(r)})
+    }
+
     return targets;
 }
 
@@ -327,7 +335,8 @@ Room.prototype.getBaseFrameWall = function getBaseFrameWall() {
 
 Room.prototype.drawPath = function drawPath(path) {
     for (var i = 0; i < path.length-1; i++) {
-        this.visual.line(path[i], path[i+1]);
+        if (path[i].roomName == this.name) this.visual.line(path[i], path[i+1]);
+        else Game.rooms[path[i].roomName].visual.line(path[i], path[i+1]);
     }
 }
 
@@ -375,9 +384,10 @@ Room.prototype.findHostileCreeps = function findHostileCreeps() {
     });
 
     for (name in this.memory.outposts) {
-        Game.rooms[name].find(FIND_HOSTILE_CREEPS).forEach(element => {
-            targets.push(element)
-        });
+        if (Game.rooms[name])
+            Game.rooms[name].find(FIND_HOSTILE_CREEPS).forEach(element => {
+                targets.push(element)
+            });
     }
 
     return targets;

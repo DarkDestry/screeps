@@ -8,7 +8,7 @@ module.exports.config = [[],
 
 module.exports.update = function update(creep) {
     if (!creep.memory.originroom) creep.memory.originroom = creep.room.name;
-    if (!creep.room.memory.builder[creep.name]) creep.room.memory.builder[creep.name] = {};
+    if (!Game.rooms[creep.memory.originroom].memory.builder[creep.name]) Game.rooms[creep.memory.originroom].memory.builder[creep.name] = {};
 
     if (creep.totalCarry() == 0) state_pickup(creep);
     else state_build(creep);
@@ -20,7 +20,8 @@ function state_build(creep) {
     if (creep.memory.target) target = Game.getObjectById(creep.memory.target.id)
     if (target != null && target.progress == undefined && target.hits == target.hitsMax) target = null
     if (target == null) {
-        target = creep.pos.findClosestByRange(creep.room.getConstructionTargets());
+        target = creep.pos.findClosestByPath(Game.rooms[creep.memory.originroom].getConstructionTargets());
+        if (!target && Game.rooms[creep.memory.originroom].getConstructionTargets().length > 0) target = Game.rooms[creep.memory.originroom].getConstructionTargets()[0]
         creep.memory.target = target;
     }
     //If there is literally no more construction targets, Idle
@@ -36,7 +37,7 @@ function state_build(creep) {
     }
     
     //goto Target
-    creep.moveTo(target.pos, {range: 1, ignoreCreeps: false, ignoreRoads: true});
+    creep.moveTo(target.pos, {range: 1, ignoreCreeps: false, ignoreRoads: true, swampCost: 3});
 
     //Creates jiggle motion to ensure creep is always moving
     //If too close, move further
@@ -68,6 +69,7 @@ function state_pickup(creep) {
             {
                 return obj.amount > creep.carryCapacity && obj.resourceType == RESOURCE_ENERGY
             }});
+        if (!target) target = Game.rooms[creep.memory.originroom].storage;
     }
     if (!target) {
         var spawn = Game.rooms[creep.memory.originroom].getSpawns()[0]
@@ -80,7 +82,7 @@ function state_pickup(creep) {
     }
     
     //goto Target
-    creep.moveTo(target.pos, {range: 1, ignoreCreeps: false, ignoreRoads: false});
+    creep.moveTo(target.pos, {range: 1, ignoreCreeps: false, ignoreRoads: false, swampCost:3});
 
     
     //Transact with target
