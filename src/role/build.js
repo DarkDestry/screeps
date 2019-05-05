@@ -7,6 +7,7 @@ module.exports.config = [[],
 ]
 
 module.exports.update = function update(creep) {
+    if (!creep.memory.originroom) creep.memory.originroom = creep.room.name;
     if (!creep.room.memory.builder[creep.name]) creep.room.memory.builder[creep.name] = {};
 
     if (creep.totalCarry() == 0) state_pickup(creep);
@@ -24,6 +25,10 @@ function state_build(creep) {
     }
     //If there is literally no more construction targets, Idle
     if (!target) {
+        var spawn = Game.rooms[creep.memory.originroom].getSpawns()[0]
+        creep.moveTo(spawn);
+        spawn.recycleCreep(creep);
+        return;
         var path = PathFinder.search(creep.pos, creep.room.find(FIND_STRUCTURES).map(s => {return{pos:s.pos, range:5}}) , {flee:true, ignoreRoads: false, roomCallback: global.core.getCostMatrix, maxOps: 100} ).path
         creep.moveByPath(path)
         creep.room.drawPath(path)
@@ -65,6 +70,10 @@ function state_pickup(creep) {
             }});
     }
     if (!target) {
+        var spawn = Game.rooms[creep.memory.originroom].getSpawns()[0]
+        creep.moveTo(spawn);
+        spawn.recycleCreep(creep);
+        return;
         var path = PathFinder.search(creep.pos, creep.room.find(FIND_STRUCTURES).map(s => {return{pos:s.pos, range:5}}) , {flee:true} ).path
         creep.moveByPath(path)
         return;

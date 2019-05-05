@@ -17,6 +17,13 @@ module.exports.update = function update(creep) {
     var nextPos = creep.room.getPositionAt(pathPos.x, pathPos.y) //screeps Pos
     creep.moveTo(nextPos, {range: 0, ignoreCreeps: true, ignoreRoads: false});
 
+    //Check for recycled tombstones
+    var tombstones = creep.pos.findInRange(FIND_TOMBSTONES,1);
+    tombstones.forEach(element => {
+        if(element.store[RESOURCE_ENERGY] > 0) creep.withdraw(element, RESOURCE_ENERGY)
+    });
+
+
     //Scan around for transfer targets
     var transferTargets = creep.pos.findInRange(FIND_MY_STRUCTURES, 1, {filter: function(obj){
         return (obj.structureType == STRUCTURE_EXTENSION || obj.structureType == STRUCTURE_SPAWN || obj.structureType == STRUCTURE_STORAGE || obj.structureType == STRUCTURE_TOWER || obj.structureType == STRUCTURE_LINK);
@@ -34,7 +41,7 @@ module.exports.update = function update(creep) {
             creep.withdraw(target, RESOURCE_ENERGY);
             break;
         }
-        
+
         if ((target.structureType == STRUCTURE_LINK && target.energy > 0)) {
             if (creep.totalCarry() == creep.carryCapacity)
                 creep.transfer(creep.room.storage, RESOURCE_ENERGY)

@@ -17,6 +17,11 @@ module.exports.update = function update(creep) {
     var nextPos = creep.room.getPositionAt(pathPos.x, pathPos.y) //screeps Pos
     creep.moveTo(nextPos, {range: 0, ignoreCreeps: true, ignoreRoads: false});
 
+    var tombstones = creep.pos.findInRange(FIND_TOMBSTONES,1);
+    tombstones.forEach(element => {
+        if(element.store[RESOURCE_ENERGY] > 0) creep.withdraw(element, RESOURCE_ENERGY)
+    });
+
     //Scan around for pickup targets
     var pickupTargets = creep.pos.findInRange(FIND_DROPPED_RESOURCES,1,{filter: function(obj){
         return (obj.resourceType == RESOURCE_ENERGY)
