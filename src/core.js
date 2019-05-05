@@ -271,23 +271,23 @@ function ActExtensionPlan(spawn, room) {
             }
             break;
         case 6:
-            room.createConstructionSite(spawn.pos.x+3,spawn.pos.y+1,STRUCTURE_EXTENSION)
-            room.createConstructionSite(spawn.pos.x-5,spawn.pos.y+1,STRUCTURE_EXTENSION)
-            room.createConstructionSite(spawn.pos.x-3,spawn.pos.y+1,STRUCTURE_EXTENSION)
-            room.createConstructionSite(spawn.pos.x-5,spawn.pos.y+2,STRUCTURE_EXTENSION)
-            room.createConstructionSite(spawn.pos.x+5,spawn.pos.y+2,STRUCTURE_EXTENSION)
-            room.createConstructionSite(spawn.pos.x-4,spawn.pos.y+2,STRUCTURE_EXTENSION)
-            room.createConstructionSite(spawn.pos.x+4,spawn.pos.y+2,STRUCTURE_EXTENSION)
-            room.createConstructionSite(spawn.pos.x-5,spawn.pos.y+3,STRUCTURE_EXTENSION)
-            room.createConstructionSite(spawn.pos.x+5,spawn.pos.y+3,STRUCTURE_EXTENSION)
-            room.createConstructionSite(spawn.pos.x+3,spawn.pos.y+3,STRUCTURE_EXTENSION)
+            room.createConstructionSite(s.x+3,s.y+1,STRUCTURE_EXTENSION)
+            room.createConstructionSite(s.x-5,s.y+1,STRUCTURE_EXTENSION)
+            room.createConstructionSite(s.x-3,s.y+1,STRUCTURE_EXTENSION)
+            room.createConstructionSite(s.x-5,s.y+2,STRUCTURE_EXTENSION)
+            room.createConstructionSite(s.x+5,s.y+2,STRUCTURE_EXTENSION)
+            room.createConstructionSite(s.x-4,s.y+2,STRUCTURE_EXTENSION)
+            room.createConstructionSite(s.x+4,s.y+2,STRUCTURE_EXTENSION)
+            room.createConstructionSite(s.x-5,s.y+3,STRUCTURE_EXTENSION)
+            room.createConstructionSite(s.x+5,s.y+3,STRUCTURE_EXTENSION)
+            room.createConstructionSite(s.x+3,s.y+3,STRUCTURE_EXTENSION)
 
-            room.createConstructionSite(spawn.pos.x-6,spawn.pos.y-1,STRUCTURE_ROAD)
-            room.createConstructionSite(spawn.pos.x+6,spawn.pos.y-1,STRUCTURE_ROAD)
-            room.createConstructionSite(spawn.pos.x-6,spawn.pos.y-2,STRUCTURE_ROAD)
-            room.createConstructionSite(spawn.pos.x+6,spawn.pos.y-2,STRUCTURE_ROAD)
-            room.createConstructionSite(spawn.pos.x-6,spawn.pos.y-3,STRUCTURE_ROAD)
-            room.createConstructionSite(spawn.pos.x+6,spawn.pos.y-3,STRUCTURE_ROAD)
+            room.createConstructionSite(s.x-6,s.y+1,STRUCTURE_ROAD)
+            room.createConstructionSite(s.x+6,s.y+1,STRUCTURE_ROAD)
+            room.createConstructionSite(s.x-6,s.y+2,STRUCTURE_ROAD)
+            room.createConstructionSite(s.x+6,s.y+2,STRUCTURE_ROAD)
+            room.createConstructionSite(s.x-6,s.y+3,STRUCTURE_ROAD)
+            room.createConstructionSite(s.x+6,s.y+3,STRUCTURE_ROAD)
     }
 }
 
