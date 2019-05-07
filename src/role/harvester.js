@@ -15,6 +15,20 @@ module.exports.update = function update(creep) {
     if (target == null) return;
 
     var result = creep.moveTo(target.pos, {range: 1, ignoreCreeps: false, swampCost: 3});
+    if (creep.pos.getRangeTo(target.pos) == 1) {
+        var links = target.pos.findInRange(FIND_MY_STRUCTURES, 2, {
+            filter: { structureType: STRUCTURE_LINK }
+        })
+        if (links.length != 0) creep.moveTo(links[0].pos, {range: 1, ignoreCreeps: false, swampCost: 3})
+    }
+
+
+    var droppedEnergy = creep.pos.findInRange(FIND_DROPPED_RESOURCES,1,{filter: function(obj){
+        return (obj.resourceType == RESOURCE_ENERGY)
+    }})
+    if (droppedEnergy.length != 0) {
+        creep.pickup(droppedEnergy[0])
+    }
 
     //console.log (creep.name + " ### " + result)
 
