@@ -11,11 +11,9 @@ global.core.plan = function plan() {
         var spawn = spawns[0];
         DrawExtensionPlan(spawn, room);
         ActExtensionPlan(spawn, room);
-        DrawRoadPlan(spawn, room);
-        ActRoadPlan(spawn, room);
+        RoadPlan(spawn, room);
         DrawBaseFrame(spawn, room);
-        DrawLinkPlan(spawn, room);
-        ActLinkPlan(spawn, room);
+        LinkPlan(spawn, room);
     }
 }
 
@@ -53,7 +51,7 @@ global.core.getCostMatrix = function getCostMatrix(roomName) {
     return costs;
 }
 
-function DrawLinkPlan(spawn, room) {
+function LinkPlan(spawn, room) {
     if (!room.storage) return;
     var sources = room.find(FIND_SOURCES) 
     var storage = room.storage;
@@ -81,6 +79,7 @@ function DrawLinkPlan(spawn, room) {
     var path = furthestSource.pos.findPathTo(storage, {ignoreCreeps: true});
 
     var pos = path[1];
+    //============DRAW===============
     var poly = [
         [pos.x + 0.2, pos.y],
         [pos.x, pos.y + 0.4],
@@ -89,36 +88,9 @@ function DrawLinkPlan(spawn, room) {
         [pos.x + 0.2, pos.y],
     ]
     room.visual.poly(poly,{fill: 'yellow', radius: 0.55, stroke: 'white'});
-}
 
-function ActLinkPlan(spawn, room) {
-    if (!room.storage) return;
-    var sources = room.find(FIND_SOURCES) 
-    var storage = room.storage;
-    var furthestSource = undefined;
-    var furthestDistance = 0;
-
-    //Ensure That there is a link at spawn already
-    if (storage.pos.findInRange(FIND_MY_STRUCTURES,2,{filter: {structureType: STRUCTURE_LINK}}).length == 0) return;
-    
-    for (var i in sources) {
-        //Disqualify sources with a link nearby
-        if (sources[i].pos.findInRange(FIND_MY_STRUCTURES,2,{filter: {structureType: STRUCTURE_LINK}}).length > 0) continue;
-        if (sources[i].pos.findInRange(FIND_CONSTRUCTION_SITES,2,{filter: {structureType: STRUCTURE_LINK}}).length > 0) continue;
-
-
-        var distance = storage.pos.findPathTo(sources[i]).length;
-        if (distance > furthestDistance) {
-            furthestDistance = distance;
-            furthestSource = sources[i];
-        }
-    }
-
-    if (!furthestSource) return
-
-    var path = furthestSource.pos.findPathTo(storage, {ignoreCreeps: true});
-
-    var pos = path[1];
+    //==========ACT============
+    if (Game.time % 5 != 0) return;
     room.createConstructionSite (pos.x, pos.y, STRUCTURE_LINK);
     if (room.getTerrain().get(pos.x+1, pos.y) != TERRAIN_MASK_WALL) room.createConstructionSite(pos.x+1, pos.y,STRUCTURE_ROAD)
     if (room.getTerrain().get(pos.x, pos.y+1) != TERRAIN_MASK_WALL) room.createConstructionSite(pos.x, pos.y+1,STRUCTURE_ROAD)
@@ -141,61 +113,53 @@ function DrawBaseFrame(spawn,room) {
     }
 }
 
-function DrawRoadPlan(spawn, room) {
+function RoadPlan(spawn, room) {
     var eCarryRoad = room.getECarryPath();
-    
-    for (var i = 0; i < eCarryRoad.length-1; i++) {
-        room.visual.line(eCarryRoad[i].x, eCarryRoad[i].y, eCarryRoad[i+1].x, eCarryRoad[i+1].y, {color: 'white'})
-    }
-    
     var sCarryRoad = room.getSCarryPath();
+    var sources = room.find(FIND_SOURCES);
+    for (var name in room.memory.outposts) {if (Game.rooms[name]) Game.rooms[name].find(FIND_SOURCES).forEach(s => {sources.push(s)})}
     
+    //==================DRAW================
     for (var i = 0; i < sCarryRoad.length-1; i++) {
         room.visual.line(sCarryRoad[i].x, sCarryRoad[i].y, sCarryRoad[i+1].x, sCarryRoad[i+1].y, {color: 'white'})
     }
+
+    for (var i = 0; i < eCarryRoad.length-1; i++) {
+        room.visual.line(eCarryRoad[i].x, eCarryRoad[i].y, eCarryRoad[i+1].x, eCarryRoad[i+1].y, {color: 'white'})
+    }    
     
     //source road
-    var sources = room.find(FIND_SOURCES);
-    for (var name in room.memory.outposts) {if (Game.rooms[name]) Game.rooms[name].find(FIND_SOURCES).forEach(s => {sources.push(s)})}
     for (var i in sources) {
         var source = sources[i];
         var path = PathFinder.search(source.pos, room.getBaseFrameRampart().map(p => {return room.getPositionAt(p.x,p.y)}),{heuristicWeight: 1.5, swampCost: 2}).path;
+        //==================DRAW================
         room.drawPath(path);
+        //==================ACT=================
+        if (Game.time % 5 == 0 && room.controller.level >= 5 && room.storage.store[RESOURCE_ENERGY] > 100000) {
+            for (var i in path) {
+                Game.rooms[path[i].roomName].createConstructionSite(path[i], STRUCTURE_ROAD);
+            }
+        }
     }
-}
 
-function ActRoadPlan(spawn, room) {
-    var eCarryRoad = room.getECarryPath();
-    
+    //==================ACT=================
+    if (Game.time % 5 != 0) return;
     for (var i in eCarryRoad) {
         var pos = eCarryRoad[i];
         room.createConstructionSite(pos.x, pos.y, STRUCTURE_ROAD)
     }
 
     if (room.controller.level >= 4){
-        var sCarryRoad = room.getSCarryPath();
         
         for (var i in sCarryRoad) {
             var pos = sCarryRoad[i];
             room.createConstructionSite(pos.x, pos.y, STRUCTURE_ROAD)
         }
     }
-    
-    //source road
-    if (room.controller.level >= 5 && room.storage.store[RESOURCE_ENERGY] > 100000) {
-        var sources = room.find(FIND_SOURCES);
-        for (var name in room.memory.outposts) {if (Game.rooms[name]) Game.rooms[name].find(FIND_SOURCES).forEach(s => {sources.push(s)})}
-        for (var i in sources) {
-            var source = sources[i];
-            var path = PathFinder.search(source.pos, room.getBaseFrameRampart().map(p => {return room.getPositionAt(p.x,p.y)}),{heuristicWeight: 1.5, swampCost: 2}).path;
-            for (var i in path) {
-                Game.rooms[path[i].roomName].createConstructionSite(path[i], STRUCTURE_ROAD);
-            }
-        }
-    }
 }
 
 function ActExtensionPlan(spawn, room) {
+    if (Game.time % 5 != 0) return;
     var s = spawn.pos;
     switch (room.controller.level) {
         case 2:
