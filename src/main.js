@@ -194,7 +194,7 @@ profiler.wrap(function() {
             }
 
             //Deploy builders
-            if (room.getConstructionTargets().length/2 > room.getBuilderCount() && room.getBuilderCount < 5) {
+            if (room.getConstructionTargets().length/2 > room.getBuilderCount() && room.getBuilderCount() < 5) {
                 if (spawn)
                     do {
                         result = spawn.spawnCreep (
