@@ -25,6 +25,8 @@ module.exports.update = function update(tower) {
         return;
     }
 
+    if (tower.room.storage.store[RESOURCE_ENERGY] < 200000) return;
+
     target = tower.room.find(FIND_MY_STRUCTURES, {filter: function(s){ return s.structureType == STRUCTURE_RAMPART && s.hits < 500000}});
     if(target){
         target = _.sortBy(target, t => {return t.hits});
