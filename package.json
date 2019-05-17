@@ -1,0 +1,28 @@
+{
+  "name": "darkdestry-screeps",
+  "version": "1.0.0",
+  "description": "DarkDestry's screeps AI",
+  "main": "main.js",
+  "dependencies": {
+    "grunt-contrib-clean": "^2.0.0",
+    "grunt": "^1.0.4",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-rsync": "^3.0.0",
+    "grunt-screeps": "^1.4.0",
+    "time-grunt": "^2.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DarkDestry/screeps.git"
+  },
+  "author": "DarkDestry",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DarkDestry/screeps/issues"
+  },
+  "homepage": "https://github.com/DarkDestry/screeps#readme"
+}
