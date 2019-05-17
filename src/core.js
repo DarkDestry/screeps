@@ -12,7 +12,7 @@ global.core.plan = function plan() {
         DrawExtensionPlan(spawn, room);
         ActExtensionPlan(spawn, room);
         RoadPlan(spawn, room);
-        DrawBaseFrame(spawn, room);
+        BaseFrame(spawn, room);
         LinkPlan(spawn, room);
     }
 }
@@ -98,7 +98,8 @@ function LinkPlan(spawn, room) {
     if (room.getTerrain().get(pos.x, pos.y-1) != TERRAIN_MASK_WALL) room.createConstructionSite(pos.x, pos.y-1,STRUCTURE_ROAD)
 }
 
-function DrawBaseFrame(spawn,room) {
+function BaseFrame(spawn,room) {
+    //======================DRAW====================
     var wall = room.getBaseFrameWall();
     for (var i in wall){
         var structuresAtPoint = room.lookForAt(LOOK_STRUCTURES,wall[i].x,wall[i].y)
@@ -110,6 +111,19 @@ function DrawBaseFrame(spawn,room) {
         var structuresAtPoint = room.lookForAt(LOOK_STRUCTURES,rampart[i].x, rampart[i].y)
         structuresAtPoint = _.filter(structuresAtPoint, o => {return o.structureType == STRUCTURE_RAMPART})
         if (structuresAtPoint.length == 0) room.visual.circle(rampart[i],{fill: 'white', radius: 0.35, stroke: 'black'})
+    }
+
+    //=====================ACT======================
+    //place frame
+    if(room.controller.level >=5 && room.storage.store[RESOURCE_ENERGY] > 200000) {
+        var walls = room.getBaseFrameWall()
+        for(var i in walls) {
+            room.createConstructionSite(walls[i].x, walls[i].y ,STRUCTURE_WALL)
+        }
+        var ramparts = room.getBaseFrameRampart()
+        for(var i in ramparts) {
+            room.createConstructionSite(ramparts[i].x, ramparts[i].y ,STRUCTURE_RAMPART)
+        }
     }
 }
 
@@ -224,17 +238,7 @@ function ActExtensionPlan(spawn, room) {
             room.createConstructionSite(s.x+6,s.y-1,STRUCTURE_ROAD)
             room.createConstructionSite(s.x+4,s.y+1,STRUCTURE_ROAD)
 
-            //place frame
-            if(room.storage.store[RESOURCE_ENERGY] > 200000) {
-                var walls = room.getBaseFrameWall()
-                for(var i in walls) {
-                    room.createConstructionSite(walls[i].x, walls[i].y ,STRUCTURE_WALL)
-                }
-                var ramparts = room.getBaseFrameRampart()
-                for(var i in ramparts) {
-                    room.createConstructionSite(ramparts[i].x, ramparts[i].y ,STRUCTURE_RAMPART)
-                }
-            }
+            
             break;
         case 6:
             room.createConstructionSite(s.x+3,s.y+1,STRUCTURE_EXTENSION)
