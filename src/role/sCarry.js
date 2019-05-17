@@ -14,6 +14,14 @@ module.exports.update = function update(creep) {
     //Go to pathLoc
     var path = creep.room.getSCarryPath(); //eCarry Path
     var pathPos = path[creep.memory.pathLoc]; //The position to go to in eCarry Path element
+
+    //advance to next pathLoc 
+    if (creep.pos.x == pathPos.x && creep.pos.y == pathPos.y) {
+        creep.memory.pathLoc++;
+        if (creep.memory.pathLoc == path.length) creep.memory.pathLoc = 0;
+    } 
+
+    pathPos = path[creep.memory.pathLoc]; //The position to go to in eCarry Path element
     var nextPos = creep.room.getPositionAt(pathPos.x, pathPos.y) //screeps Pos
     creep.moveTo(nextPos, {range: 0, ignoreCreeps: true, ignoreRoads: false});
 
@@ -52,11 +60,6 @@ module.exports.update = function update(creep) {
         }
     }
 
-
-    //advance to next pathLoc 
-    if (creep.pos.x == pathPos.x && creep.pos.y == pathPos.y) {
-            creep.memory.pathLoc++;
-            if (creep.memory.pathLoc == path.length) creep.memory.pathLoc = 0;
-    }  
+ 
 
 }

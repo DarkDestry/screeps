@@ -14,6 +14,20 @@ module.exports.update = function update(creep) {
     //Go to pathLoc
     var path = creep.room.getECarryPath(); //eCarry Path
     var pathPos = path[creep.memory.pathLoc]; //The position to go to in eCarry Path element
+
+    //advance to next pathLoc 
+    if (creep.pos.x == pathPos.x && creep.pos.y == pathPos.y || creep.totalCarry() == 0) {
+        if (creep.memory.forward) {
+            creep.memory.pathLoc++;
+            if (creep.memory.pathLoc == path.length - 1) creep.memory.forward = false;
+        }
+        else {
+            creep.memory.pathLoc--;
+            if (creep.memory.pathLoc == 0) creep.memory.forward = true;
+        }
+    } 
+
+    var pathPos = path[creep.memory.pathLoc]; //The position to go to in eCarry Path element
     var nextPos = creep.room.getPositionAt(pathPos.x, pathPos.y) //screeps Pos
     creep.moveTo(nextPos, {range: 0, ignoreCreeps: true, ignoreRoads: false});
 
@@ -48,17 +62,6 @@ module.exports.update = function update(creep) {
         }
     }
 
-
-    //advance to next pathLoc 
-    if (creep.pos.x == pathPos.x && creep.pos.y == pathPos.y) {
-        if (creep.memory.forward) {
-            creep.memory.pathLoc++;
-            if (creep.memory.pathLoc == path.length - 1) creep.memory.forward = false;
-        }
-        else {
-            creep.memory.pathLoc--;
-            if (creep.memory.pathLoc == 0) creep.memory.forward = true;
-        }
-    }  
+ 
 
 }
