@@ -9,7 +9,8 @@ module.exports.observe = require("role_observe");
 module.exports.defense = require("role_defense");
 
 module.exports.update = function update(creep){
-    creep.room.visual.text(creep.memory.role, creep.pos, {font:"0.5", stroke: "black", align: "center"})
+    //creep.room.visual.text(creep.memory.role, creep.pos, {font:"0.5", stroke: "black", align: "center"})
+    creep.say(creep.memory.role)
 
     switch (creep.memory.role) {
         case "harvester": 
